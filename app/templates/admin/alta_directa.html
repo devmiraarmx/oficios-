@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block titulo %}Alta directa de profesional{% endblock %}
+
+{% block contenido %}
+<h1>Alta directa</h1>
+<p class="hero__cota">
+  Para profesionales de tu red que ya conoces. Se aprueba de inmediato,
+  sin llamada de verificación (origen: agregado manual).
+</p>
+
+<form method="post" class="formulario" style="margin-top:20px">
+  <div class="campo">
+    <label for="nombre">Nombre completo</label>
+    <input name="nombre" id="nombre" required>
+  </div>
+
+  <div class="campo">
+    <label for="telefono">Teléfono (WhatsApp)</label>
+    <input name="telefono" id="telefono" type="tel" required placeholder="55 1234 5678">
+  </div>
+
+  <div class="campo">
+    <label>Oficios</label>
+    <div class="opciones">
+      {% for o in oficios %}
+        <label><input type="checkbox" name="oficios" value="{{ o.id }}"> {{ o.nombre }}</label>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="campo">
+    <label>Zonas que cubre</label>
+    <div class="opciones">
+      {% for z in zonas %}
+        <label><input type="checkbox" name="zonas" value="{{ z.id }}"> {{ z.nombre }} · {{ z.ciudad }}</label>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="campo">
+    <label for="zona">Zona principal (texto)</label>
+    <input name="zona" id="zona" placeholder="Ej. Coyoacán y alrededores">
+  </div>
+
+  <div class="campo">
+    <label for="anios_experiencia">Años de experiencia</label>
+    <input name="anios_experiencia" id="anios_experiencia" type="number" min="0" value="0">
+  </div>
+
+  <div class="campo">
+    <label for="descripcion">Descripción corta</label>
+    <textarea name="descripcion" id="descripcion"></textarea>
+  </div>
+
+  <div class="campo">
+    <label for="telefono_referencia">Teléfono de referencia (opcional)</label>
+    <input name="telefono_referencia" id="telefono_referencia" type="tel">
+  </div>
+
+  <div class="campo">
+    <label for="saldo_creditos">Créditos iniciales (opcional)</label>
+    <input name="saldo_creditos" id="saldo_creditos" type="number" min="0" value="0">
+    <small class="hero__cota">Útil para dar créditos de cortesía a un profesional de arranque.</small>
+  </div>
+
+  <button class="boton" type="submit">Dar de alta aprobado</button>
+  <a class="boton boton--fantasma" href="{{ url_for('admin.panel') }}">Cancelar</a>
+</form>
+{% endblock %}

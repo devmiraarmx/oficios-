@@ -26,6 +26,11 @@ class EstadoProfesional(str, Enum):
     RECHAZADO = "rechazado"
 
 
+class OrigenProfesional(str, Enum):
+    AUTORREGISTRO = "autorregistro"      # llegó por el formulario público
+    AGREGADO_MANUAL = "agregado_manual"  # lo dio de alta un socio (su red)
+
+
 class TipoMovimiento(str, Enum):
     COMPRA = "compra"      # el profesional recarga créditos
     CONSUMO = "consumo"    # se descuenta un crédito al desbloquear un lead
@@ -109,6 +114,13 @@ class Profesional(db.Model):
     foto_url = db.Column(db.String(300))
     descripcion = db.Column(db.Text)
     telefono_referencia = db.Column(db.String(20))
+    # Cómo entró al directorio. Los agregados manualmente por un socio (su red
+    # de contactos) entran directo con estado = aprobado, sin llamada.
+    origen = db.Column(
+        db.Enum(OrigenProfesional, values_callable=lambda e: [x.value for x in e]),
+        default=OrigenProfesional.AUTORREGISTRO,
+        nullable=False,
+    )
     creado_en = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     oficios = db.relationship("Oficio", secondary=profesional_oficios, backref="profesionales")

@@ -2,7 +2,10 @@
 {% block titulo %}Panel — altas pendientes{% endblock %}
 
 {% block contenido %}
-<h1>Cola de verificación</h1>
+<div style="display:flex; justify-content:space-between; align-items:center; gap:16px;">
+  <h1 style="margin:0">Cola de verificación</h1>
+  <a class="boton" href="{{ url_for('admin.alta_directa') }}">+ Alta directa</a>
+</div>
 <p class="hero__cota">{{ pendientes | length }} alta(s) pendiente(s) de aprobar.</p>
 
 {% if pendientes %}
