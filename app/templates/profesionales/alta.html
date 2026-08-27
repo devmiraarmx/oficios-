@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block titulo %}Regístrate como profesional{% endblock %}
+
+{% block contenido %}
+<h1>Regístrate como profesional</h1>
+<p class="hero__cota">
+  Tu alta pasa por una verificación humana: te llamamos y contactamos tu
+  referencia antes de aprobarte. No pedimos identificación oficial.
+</p>
+
+<form method="post" class="formulario" style="margin-top:20px">
+  <div class="campo">
+    <label for="nombre">Nombre completo</label>
+    <input name="nombre" id="nombre" required>
+  </div>
+
+  <div class="campo">
+    <label for="telefono">Teléfono (WhatsApp)</label>
+    <input name="telefono" id="telefono" type="tel" required placeholder="55 1234 5678">
+  </div>
+
+  <div class="campo">
+    <label>Oficios que dominas</label>
+    <div class="opciones">
+      {% for o in oficios %}
+        <label><input type="checkbox" name="oficios" value="{{ o.id }}"> {{ o.nombre }}</label>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="campo">
+    <label>Zonas que cubres</label>
+    <div class="opciones">
+      {% for z in zonas %}
+        <label><input type="checkbox" name="zonas" value="{{ z.id }}"> {{ z.nombre }} · {{ z.ciudad }}</label>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="campo">
+    <label for="zona">Zona principal (texto)</label>
+    <input name="zona" id="zona" placeholder="Ej. Coyoacán y alrededores">
+  </div>
+
+  <div class="campo">
+    <label for="anios_experiencia">Años de experiencia</label>
+    <input name="anios_experiencia" id="anios_experiencia" type="number" min="0" value="0">
+  </div>
+
+  <div class="campo">
+    <label for="descripcion">Descripción corta</label>
+    <textarea name="descripcion" id="descripcion"
+              placeholder="Ej. Plomería general, fugas, calentadores y drenaje."></textarea>
+  </div>
+
+  <div class="campo">
+    <label for="telefono_referencia">Teléfono de una referencia</label>
+    <input name="telefono_referencia" id="telefono_referencia" type="tel" required
+           placeholder="Alguien que pueda dar referencia de tu trabajo">
+    <small class="hero__cota">Llamaremos a esta persona como parte de la verificación.</small>
+  </div>
+
+  <button class="boton" type="submit">Enviar registro</button>
+</form>
+{% endblock %}

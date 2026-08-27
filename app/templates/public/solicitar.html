@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block titulo %}Solicitar un servicio{% endblock %}
+
+{% block contenido %}
+<h1>Solicitar un servicio</h1>
+<p class="hero__cota">Sin registro ni contraseña. Solo describe lo que necesitas.</p>
+
+<form method="post" class="formulario" style="margin-top:20px">
+  <div class="campo">
+    <label for="oficio">¿Qué oficio necesitas?</label>
+    <input list="lista-oficios" name="oficio" id="oficio" required
+           placeholder="Ej. plomero, electricista…">
+    <datalist id="lista-oficios">
+      {% for o in oficios %}<option value="{{ o.nombre }}">{% endfor %}
+    </datalist>
+  </div>
+
+  <div class="campo">
+    <label for="zona">¿En qué zona?</label>
+    <input name="zona" id="zona" required placeholder="Ej. Coyoacán, Zona Hotelera…">
+  </div>
+
+  <div class="campo">
+    <label for="descripcion">Describe brevemente el trabajo</label>
+    <textarea name="descripcion" id="descripcion" required
+              placeholder="Ej. Fuga en el calentador de agua, urge revisión."></textarea>
+  </div>
+
+  <div class="campo">
+    <label>Urgencia</label>
+    <div class="opciones">
+      <label><input type="radio" name="urgencia" value="hoy"> Hoy</label>
+      <label><input type="radio" name="urgencia" value="esta_semana" checked> Esta semana</label>
+      <label><input type="radio" name="urgencia" value="sin_prisa"> Sin prisa</label>
+    </div>
+  </div>
+
+  <div class="campo">
+    <label for="nombre">Tu nombre</label>
+    <input name="nombre" id="nombre" placeholder="Nombre de contacto">
+  </div>
+
+  <div class="campo">
+    <label for="telefono">Tu teléfono (WhatsApp)</label>
+    <input name="telefono" id="telefono" type="tel" required placeholder="55 1234 5678">
+    <small class="hero__cota">Te enviaremos un código por SMS para confirmar el número.</small>
+  </div>
+
+  <button class="boton" type="submit">Enviar solicitud</button>
+  <p class="hero__cota" style="margin-top:12px">
+    Al enviar aceptas nuestro
+    <a href="{{ url_for('public.aviso_privacidad') }}">aviso de privacidad</a>.
+  </p>
+</form>
+{% endblock %}

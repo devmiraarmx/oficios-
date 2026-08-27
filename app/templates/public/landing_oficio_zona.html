@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block titulo %}{{ oficio.nombre }} en {{ zona.nombre }} — verificados a mano{% endblock %}
+{% block descripcion %}{{ oficio.nombre }} en {{ zona.nombre }}, {{ zona.ciudad }}. Profesionales verificados a mano, con referencia comprobada. Solicita una cotización sin registro.{% endblock %}
+
+{% block contenido %}
+<section class="hero">
+  <p class="hero__cota">┌── {{ zona.ciudad }} / {{ zona.nombre }} ──</p>
+  <h1>{{ oficio.nombre }} en {{ zona.nombre }}</h1>
+  <p>
+    {{ profesionales | length }} profesional(es) de {{ oficio.nombre | lower }}
+    verificados a mano que cubren {{ zona.nombre }}.
+  </p>
+  <p><a class="boton" href="{{ url_for('public.solicitar') }}">Solicitar un servicio</a></p>
+</section>
+
+{% if profesionales %}
+  <div class="rejilla-fichas">
+    {% for profesional in profesionales %}
+      {% include "public/_ficha.html" %}
+    {% endfor %}
+  </div>
+{% else %}
+  <p>Aún no tenemos {{ oficio.nombre | lower }} aprobados en {{ zona.nombre }}.
+     Deja tu solicitud y te avisamos en cuanto haya uno disponible.</p>
+{% endif %}
+{% endblock %}

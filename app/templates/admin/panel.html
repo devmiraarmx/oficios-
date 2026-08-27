@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block titulo %}Panel — altas pendientes{% endblock %}
+
+{% block contenido %}
+<h1>Cola de verificación</h1>
+<p class="hero__cota">{{ pendientes | length }} alta(s) pendiente(s) de aprobar.</p>
+
+{% if pendientes %}
+<table class="tabla">
+  <thead>
+    <tr>
+      <th>Profesional</th>
+      <th>Oficios</th>
+      <th>Teléfono</th>
+      <th>Referencia</th>
+      <th>Exp.</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in pendientes %}
+    <tr id="fila-{{ p.id }}">
+      <td>{{ p.nombre }}</td>
+      <td class="dato">{{ p.oficios | map(attribute='nombre') | join(', ') or '—' }}</td>
+      <td class="dato">{{ p.telefono }}</td>
+      <td class="dato">{{ p.telefono_referencia or '—' }}</td>
+      <td class="dato">{{ p.anios_experiencia }}</td>
+      <td>
+        <div class="acciones-fila">
+          <button class="boton"
+                  hx-post="{{ url_for('admin.aprobar', profesional_id=p.id) }}"
+                  hx-target="#fila-{{ p.id }}" hx-swap="outerHTML">Aprobar</button>
+          <button class="boton boton--peligro"
+                  hx-post="{{ url_for('admin.rechazar', profesional_id=p.id) }}"
+                  hx-target="#fila-{{ p.id }}" hx-swap="outerHTML">Rechazar</button>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No hay altas pendientes. 🎉</p>
+{% endif %}
+{% endblock %}

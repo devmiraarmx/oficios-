@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Directorio de oficios{% endblock %}</title>
+  <meta name="description" content="{% block descripcion %}Profesionales de oficios verificados a mano en tu zona.{% endblock %}">
+
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+  <meta name="theme-color" content="#1B2430">
+
+  <!-- Tipografías del sistema de diseño -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}">
+
+  <!-- htmx para acciones sin recarga -->
+  <script src="{{ url_for('static', filename='js/htmx.min.js') }}" defer></script>
+</head>
+<body>
+  <header class="cabecera">
+    <div class="contenedor cabecera__fila">
+      <a href="{{ url_for('public.inicio') }}" class="marca">
+        <span class="marca__cota">├──</span> OFICIOS
+      </a>
+      <nav class="nav">
+        <a href="{{ url_for('public.directorio') }}">Directorio</a>
+        <a href="{{ url_for('public.solicitar') }}">Solicitar</a>
+        <a href="{{ url_for('profesionales.alta') }}" class="nav__cta">Soy profesional</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+      {% if mensajes %}
+        {% for categoria, mensaje in mensajes %}
+          <div class="aviso aviso--{{ categoria }}">{{ mensaje }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block contenido %}{% endblock %}
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <p class="pie__cota">└─────────── verificado a mano ───────────┘</p>
+      <p>
+        <a href="{{ url_for('public.aviso_privacidad') }}">Aviso de privacidad</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Registro del service worker (PWA)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register("{{ url_for('static', filename='sw.js') }}");
+      });
+    }
+  </script>
+</body>
+</html>

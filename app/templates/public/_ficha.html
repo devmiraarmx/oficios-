@@ -1,0 +1,33 @@
+{# Ficha técnica de un profesional. El teléfono NUNCA aparece aquí:
+   permanece oculto hasta que un profesional paga por el lead. #}
+<article class="ficha">
+  <div class="sello" aria-label="Verificado a mano">
+    <span>verificado</span><span>a&nbsp;mano</span>
+  </div>
+
+  <h3 class="ficha__titulo">
+    <a href="{{ url_for('public.perfil_profesional', profesional_id=profesional.id) }}">{{ profesional.nombre }}</a>
+  </h3>
+
+  <div class="ficha__renglon">
+    <span class="ficha__etiqueta">Oficio</span>
+    <span class="ficha__valor">{{ profesional.oficios | map(attribute='nombre') | join(', ') or '—' }}</span>
+  </div>
+  <div class="ficha__renglon">
+    <span class="ficha__etiqueta">Experiencia</span>
+    <span class="ficha__valor">{{ profesional.anios_experiencia }} años</span>
+  </div>
+  <div class="ficha__renglon">
+    <span class="ficha__etiqueta">Zona</span>
+    <span class="ficha__valor">{{ profesional.zona or (profesional.zonas | map(attribute='nombre') | join(', ')) or '—' }}</span>
+  </div>
+  <div class="ficha__renglon">
+    <span class="ficha__etiqueta">Calificación</span>
+    <span class="ficha__valor">
+      {% if profesional.calificacion_promedio %}
+        <span class="estrellas">{{ '★' * (profesional.calificacion_promedio | round(0, 'floor') | int) }}</span>
+        {{ profesional.calificacion_promedio }}
+      {% else %}—{% endif %}
+    </span>
+  </div>
+</article>
