@@ -24,7 +24,12 @@ def panel():
         .order_by(Profesional.creado_en.asc())
         .all()
     )
-    return render_template("admin/panel.html", pendientes=pendientes)
+    aprobados = (
+        Profesional.query.filter_by(estado=EstadoProfesional.APROBADO)
+        .order_by(Profesional.creado_en.desc())
+        .all()
+    )
+    return render_template("admin/panel.html", pendientes=pendientes, aprobados=aprobados)
 
 
 @bp.route("/alta-directa", methods=["GET", "POST"])
@@ -63,7 +68,12 @@ def alta_directa():
             profesional.zonas = Zona.query.filter(Zona.id.in_(zona_ids)).all()
 
         db.session.commit()
-        flash(f"{profesional.nombre} quedó aprobado y visible en el directorio.", "success")
+        enlace = url_for("profesionales.leads", token=profesional.token_acceso)
+        flash(
+            f"{profesional.nombre} quedó aprobado y visible en el directorio. "
+            f"Envíale su enlace de leads: {enlace}",
+            "success",
+        )
         return redirect(url_for("admin.panel"))
 
     return render_template(

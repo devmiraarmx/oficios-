@@ -13,6 +13,8 @@ from app.models import (
     Zona,
     Profesional,
     Resena,
+    Solicitud,
+    Urgencia,
     EstadoProfesional,
 )
 
@@ -73,4 +75,22 @@ def registrar_comandos(app: Flask) -> None:
                                   comentario="Buen trabajo, precio justo."))
             db.session.commit()
 
-        click.echo("Seed completado: catálogos y demo listos.")
+            click.echo(f"  Enlace de leads del demo: /profesionales/{demo.token_acceso}/leads")
+
+        # Solicitudes verificadas de demostración (leads válidos para el demo).
+        if not Solicitud.query.first():
+            db.session.add(Solicitud(
+                oficio="Plomero", zona="Coyoacán",
+                descripcion="Fuga en el calentador de agua, urge revisión.",
+                urgencia=Urgencia.HOY, nombre_cliente="María López",
+                telefono_cliente="5512345678", telefono_verificado=True,
+            ))
+            db.session.add(Solicitud(
+                oficio="Plomero", zona="Coyoacán",
+                descripcion="Cambio de llaves y sellado en el baño.",
+                urgencia=Urgencia.ESTA_SEMANA, nombre_cliente="Jorge Díaz",
+                telefono_cliente="5598765432", telefono_verificado=True,
+            ))
+            db.session.commit()
+
+        click.echo("Seed completado: catálogos, demo y solicitudes listos.")

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block titulo %}Tu bandeja de leads{% endblock %}
+
+{% set etiquetas_urgencia = {'hoy':'Hoy', 'esta_semana':'Esta semana', 'sin_prisa':'Sin prisa'} %}
+
+{% block contenido %}
+<div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+  <div>
+    <h1 style="margin:0">Bandeja de leads</h1>
+    <p class="hero__cota">Hola, {{ profesional.nombre }}. Guarda este enlace para volver.</p>
+  </div>
+  <div style="text-align:right">
+    <div class="ficha__etiqueta">Saldo</div>
+    <div class="precio" style="font-size:1.6rem">{{ profesional.saldo_creditos }} <span style="font-size:0.9rem">créditos</span></div>
+    <a class="boton boton--fantasma" href="{{ url_for('profesionales.creditos', token=profesional.token_acceso) }}">Comprar créditos</a>
+  </div>
+</div>
+
+<p class="hero__cota" style="margin-top:8px">
+  Desbloquear un lead cuesta {{ creditos_por_lead }} crédito(s). El teléfono del
+  cliente aparece al desbloquear; el contacto sigue por WhatsApp o llamada.
+</p>
+
+{% if leads %}
+  <div class="rejilla-fichas">
+    {% for solicitud in leads %}
+      <article class="ficha">
+        <div class="ficha__renglon">
+          <span class="ficha__etiqueta">Oficio</span>
+          <span class="ficha__valor">{{ solicitud.oficio }}</span>
+        </div>
+        <div class="ficha__renglon">
+          <span class="ficha__etiqueta">Zona</span>
+          <span class="ficha__valor">{{ solicitud.zona }}</span>
+        </div>
+        <div class="ficha__renglon">
+          <span class="ficha__etiqueta">Urgencia</span>
+          <span class="ficha__valor">{{ etiquetas_urgencia.get(solicitud.urgencia.value, '—') }}</span>
+        </div>
+        <div class="ficha__renglon">
+          <span class="ficha__etiqueta">Recibido</span>
+          <span class="ficha__valor">{{ solicitud.creado_en.strftime('%d/%m/%Y') }}</span>
+        </div>
+
+        <p style="margin:12px 0 4px">{{ solicitud.descripcion }}</p>
+
+        <div id="contacto-{{ solicitud.id }}" class="contacto-lead">
+          {% if solicitud.id in desbloqueadas %}
+            {% include "profesionales/_contacto.html" %}
+          {% else %}
+            <button class="boton"
+                    hx-post="{{ url_for('profesionales.desbloquear', token=profesional.token_acceso, solicitud_id=solicitud.id) }}"
+                    hx-target="#contacto-{{ solicitud.id }}"
+                    hx-swap="innerHTML">
+              Desbloquear contacto · {{ creditos_por_lead }} crédito(s)
+            </button>
+          {% endif %}
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+{% else %}
+  <p style="margin-top:24px">
+    Aún no hay leads verificados que coincidan con tu oficio y zona. Te
+    avisaremos por notificación cuando llegue uno.
+  </p>
+{% endif %}
+{% endblock %}

@@ -33,6 +33,16 @@ def create_app(config_class: type = Config) -> Flask:
     from app.cli import registrar_comandos
     registrar_comandos(app)
 
+    # Filtro de plantilla: teléfono -> enlace de WhatsApp (wa.me).
+    # El contacto cliente<->profesional ocurre por WhatsApp/llamada, fuera de
+    # la app; no hay chat propio.
+    @app.template_filter("whatsapp")
+    def _whatsapp(telefono):
+        digitos = "".join(c for c in (telefono or "") if c.isdigit())
+        if len(digitos) == 10:  # número nacional MX sin lada de país
+            digitos = "52" + digitos
+        return "https://wa.me/" + digitos
+
     # Chequeo de salud para Railway
     @app.route("/salud")
     def salud():

@@ -62,8 +62,15 @@ Abre <http://localhost:5000>. Rutas clave:
 | `/profesional/<id>`               | Perfil del profesional                   |
 | `/solicitar`                      | Formulario de solicitud del cliente      |
 | `/profesionales/alta`             | Registro del profesional                 |
-| `/admin/`                         | Cola de verificación (aprobar/rechazar)  |
+| `/profesionales/<token>/leads`    | Bandeja de leads (acceso por enlace mágico) |
+| `/profesionales/<token>/creditos` | Compra de créditos (paquetes escalonados)|
+| `/admin/`                         | Cola de verificación + alta directa + enlaces |
+| `/admin/alta-directa`             | Alta directa de un profesional de la red |
 | `/salud`                          | Health check para Railway                |
+
+El `flask seed` imprime el enlace de leads del profesional demo para probar
+el flujo. El panel de admin también lista los enlaces de cada profesional
+aprobado.
 
 ## Base de datos y migraciones
 
@@ -84,10 +91,18 @@ Construido: esqueleto Flask, modelos de datos, directorio + landing SEO +
 perfil, formulario de solicitud, alta de profesional, panel de verificación
 con htmx, sistema de diseño y PWA base.
 
+También construido: **flujo de leads y créditos** — bandeja del profesional
+(acceso por enlace mágico, sin login), desbloqueo de contacto que descuenta un
+crédito de forma atómica e idempotente (registra `desbloqueos` y
+`movimientos_credito`), y compra de créditos por paquetes escalonados.
+
 Pendiente de conectar (marcado con `TODO` en el código):
 
-- Verificación del teléfono del cliente por SMS (Twilio Verify).
+- Verificación del teléfono del cliente por SMS (Twilio Verify) — hoy la
+  bandeja solo muestra solicitudes ya marcadas como verificadas.
 - Notificación push a profesionales al llegar un lead que coincide.
-- Bandeja de leads del profesional y desbloqueo de contacto (descuento de crédito).
-- Compra de créditos (Stripe / Conekta).
+- Pasarela de pago real (Stripe / Conekta): la compra de créditos está
+  simulada; falta crear la sesión de pago y acreditar vía webhook.
 - Subida de foto de perfil a Cloudinary.
+- Envío automático del enlace de leads al profesional al aprobarlo
+  (hoy se copia desde el panel de admin).

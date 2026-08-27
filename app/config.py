@@ -30,6 +30,15 @@ class Config:
     # Créditos: cuántos se descuentan al desbloquear un lead.
     CREDITOS_POR_LEAD = 1
 
+    # Paquetes de créditos con precio decreciente por volumen (ver CLAUDE.md).
+    # precio_mxn es el total del paquete; el precio unitario baja al subir el
+    # volumen. Son valores ilustrativos, ajustables sin tocar código.
+    PAQUETES_CREDITOS = [
+        {"creditos": 5, "precio_mxn": 250, "popular": False},
+        {"creditos": 10, "precio_mxn": 450, "popular": True},
+        {"creditos": 20, "precio_mxn": 800, "popular": False},
+    ]
+
     # Integraciones externas (ver CLAUDE.md). Vacías = módulo desactivado.
     TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
     TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")

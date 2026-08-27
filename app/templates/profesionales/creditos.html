@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block titulo %}Comprar créditos{% endblock %}
+
+{% block contenido %}
+<div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+  <h1 style="margin:0">Comprar créditos</h1>
+  <div style="text-align:right">
+    <div class="ficha__etiqueta">Saldo actual</div>
+    <div class="precio" style="font-size:1.4rem">{{ profesional.saldo_creditos }} créditos</div>
+  </div>
+</div>
+<p class="hero__cota" style="margin-top:6px">
+  Cada crédito desbloquea el contacto de un lead. A mayor volumen, menor precio
+  por crédito.
+</p>
+
+<div class="rejilla-fichas" style="margin-top:20px">
+  {% for paquete in paquetes %}
+    <article class="ficha" style="text-align:center">
+      {% if paquete.popular %}
+        <div class="sello" aria-label="Más popular" style="border-color:var(--acento); color:var(--acento);">
+          <span>más</span><span>popular</span>
+        </div>
+      {% endif %}
+      <div class="precio" style="font-size:2.4rem; margin-top:8px">{{ paquete.creditos }}</div>
+      <div class="ficha__etiqueta">créditos</div>
+      <div class="precio" style="font-size:1.3rem; margin:10px 0 2px">${{ paquete.precio_mxn }} MXN</div>
+      <div class="hero__cota">
+        ${{ (paquete.precio_mxn / paquete.creditos) | round(0, 'floor') | int }} por crédito
+      </div>
+      <form method="post"
+            action="{{ url_for('profesionales.comprar_creditos', token=profesional.token_acceso, indice=loop.index0) }}"
+            style="margin-top:14px">
+        <button class="boton" type="submit" style="width:100%">Comprar</button>
+      </form>
+    </article>
+  {% endfor %}
+</div>
+
+<p class="hero__cota" style="margin-top:20px">
+  Pago simulado en esta versión. La pasarela real (Stripe o Conekta, con OXXO)
+  se conecta en la siguiente iteración; los créditos se acreditarán vía webhook
+  al confirmarse el pago.
+</p>
+
+<p style="margin-top:16px">
+  <a class="boton boton--fantasma" href="{{ url_for('profesionales.leads', token=profesional.token_acceso) }}">← Volver a mis leads</a>
+</p>
+{% endblock %}

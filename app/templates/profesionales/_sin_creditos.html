@@ -1,0 +1,6 @@
+{# Se devuelve cuando el profesional intenta desbloquear sin saldo. #}
+<div style="border:1px solid var(--acento-h); border-radius:var(--radio); padding:12px; background:#fdeee8;">
+  <div class="ficha__etiqueta" style="color:var(--acento-h)">Sin créditos suficientes</div>
+  <p style="margin:6px 0 10px">Necesitas al menos 1 crédito para desbloquear este lead.</p>
+  <a class="boton" href="{{ url_for('profesionales.creditos', token=profesional.token_acceso) }}">Comprar créditos</a>
+</div>

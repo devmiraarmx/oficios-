@@ -1,0 +1,13 @@
+{# Contacto revelado tras desbloquear el lead. Se muestra inline y también lo
+   devuelve htmx al presionar "Desbloquear". #}
+<div class="contacto-revelado" style="border:1px dashed var(--verificado); border-radius:var(--radio); padding:12px; background:#f0f5f1;">
+  <div class="ficha__etiqueta" style="color:var(--verificado)">Contacto desbloqueado</div>
+  {% if solicitud.nombre_cliente %}
+    <div class="dato">{{ solicitud.nombre_cliente }}</div>
+  {% endif %}
+  <div class="precio" style="font-size:1.2rem; margin:4px 0 10px">{{ solicitud.telefono_cliente }}</div>
+  <a class="boton" href="{{ solicitud.telefono_cliente | whatsapp }}" target="_blank" rel="noopener">
+    Abrir WhatsApp
+  </a>
+  <a class="boton boton--fantasma" href="tel:{{ solicitud.telefono_cliente }}">Llamar</a>
+</div>

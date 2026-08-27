@@ -11,10 +11,16 @@ Convenciones:
     - Nombres de tablas y columnas en español, como el resto del proyecto.
     - Montos de crédito son enteros (un crédito = un lead desbloqueado).
 """
+import secrets
 from datetime import datetime
 from enum import Enum
 
 from app.extensions import db
+
+
+def _nuevo_token() -> str:
+    """Token de acceso del profesional (enlace mágico, sin login/contraseña)."""
+    return secrets.token_urlsafe(16)
 
 
 # --------------------------------------------------------------------------
@@ -120,6 +126,10 @@ class Profesional(db.Model):
         db.Enum(OrigenProfesional, values_callable=lambda e: [x.value for x in e]),
         default=OrigenProfesional.AUTORREGISTRO,
         nullable=False,
+    )
+    # Enlace mágico: da acceso a la bandeja de leads sin login ni contraseña.
+    token_acceso = db.Column(
+        db.String(43), unique=True, index=True, nullable=False, default=_nuevo_token
     )
     creado_en = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 

@@ -45,4 +45,26 @@
 {% else %}
 <p>No hay altas pendientes. 🎉</p>
 {% endif %}
+
+{% if aprobados %}
+<h2 style="margin-top:40px">Profesionales aprobados</h2>
+<p class="hero__cota">Comparte con cada uno su enlace de leads (acceso sin contraseña).</p>
+<table class="tabla">
+  <thead>
+    <tr><th>Profesional</th><th>Origen</th><th>Créditos</th><th>Enlace de leads</th></tr>
+  </thead>
+  <tbody>
+    {% for p in aprobados %}
+    <tr>
+      <td>{{ p.nombre }}</td>
+      <td class="dato">{{ p.origen.value }}</td>
+      <td class="dato">{{ p.saldo_creditos }}</td>
+      <td class="dato">
+        <a href="{{ url_for('profesionales.leads', token=p.token_acceso) }}">/profesionales/{{ p.token_acceso }}/leads</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
 {% endblock %}
