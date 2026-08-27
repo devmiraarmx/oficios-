@@ -1,0 +1,11 @@
+{# Fragmento devuelto por htmx tras aprobar/rechazar un alta. #}
+<tr id="fila-{{ profesional.id }}">
+  <td colspan="6" class="dato">
+    {{ profesional.nombre }} —
+    {% if profesional.estado.value == 'aprobado' %}
+      <span style="color:var(--verificado)">✔ aprobado</span>
+    {% else %}
+      <span style="color:var(--acento-h)">✕ rechazado</span>
+    {% endif %}
+  </td>
+</tr>

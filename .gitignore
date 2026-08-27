@@ -1,0 +1,25 @@
+# Entorno
+.env
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Base de datos local
+*.sqlite3
+*.db
+
+# Migraciones generadas localmente durante desarrollo temprano
+# (cuando se estabilice el esquema, versionar la carpeta migrations/)
+
+# Sistema
+.DS_Store
+*.log
+
+# Flask instance folder (BD local)
+instance/

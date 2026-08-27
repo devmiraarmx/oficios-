@@ -1,0 +1,13 @@
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+Flask-Migrate==4.0.7
+SQLAlchemy==2.0.34
+psycopg2-binary==2.9.9
+python-dotenv==1.0.1
+gunicorn==22.0.0
+
+# Integraciones del MVP (se activan por fase, ver CLAUDE.md)
+twilio==9.2.3          # Verificación de teléfono (Twilio Verify)
+stripe==10.5.0         # Compra de créditos (o Conekta si se quiere OXXO)
+cloudinary==1.41.0     # Fotos de perfil
+pywebpush==2.0.0       # Notificaciones push (Web Push API)

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block titulo %}Encuentra profesionales de oficios verificados a mano{% endblock %}
+
+{% block contenido %}
+<section class="hero">
+  <p class="hero__cota">┌── directorio curado · CDMX y Cancún ──</p>
+  <h1>Profesionales de oficios<br>verificados <em>a mano</em>.</h1>
+  <p>
+    Plomeros, electricistas, albañiles y más. Cada profesional pasa por una
+    verificación humana real —llamada telefónica y referencia comprobada—
+    antes de aparecer en el directorio.
+  </p>
+  <p>
+    <a class="boton" href="{{ url_for('public.solicitar') }}">Solicitar un servicio</a>
+    <a class="boton boton--fantasma" href="{{ url_for('public.directorio') }}">Ver directorio</a>
+  </p>
+</section>
+
+<section class="explica-verificacion">
+  <h3>¿Qué significa "verificado a mano"?</h3>
+  <p style="margin-bottom:0">
+    No es una insignia automática. Una persona de nuestro equipo llama al
+    profesional, confirma su oficio y experiencia, y contacta a una referencia
+    real antes de aprobarlo. Sin ese paso, nadie entra al directorio.
+  </p>
+</section>
+
+{% if oficios %}
+<section>
+  <h2 style="margin-top:40px">Oficios</h2>
+  <div class="opciones">
+    {% for oficio in oficios %}
+      <a class="boton boton--fantasma" href="{{ url_for('public.directorio', oficio=oficio.slug) }}">{{ oficio.nombre }}</a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

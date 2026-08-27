@@ -65,6 +65,10 @@ Construir:
 - Panel de administración simple: cola de altas de profesional pendientes,
   con botones de aprobar/rechazar. Sin roles ni permisos — es solo para el
   founder y su socio.
+- El panel de administración también permite dar de alta directo a un
+  profesional que los socios ya conocen personalmente (su propia red de
+  contactos), sin pasar por el formulario público ni la llamada de
+  verificación — queda aprobado de inmediato.
 - Bandeja de leads del profesional, con notificación push (Web Push API)
   cuando llega una solicitud que coincide con su oficio y zona. En iOS el
   push solo funciona desde 16.4+; considerar un respaldo (SMS o correo).
@@ -88,7 +92,8 @@ Explícitamente fuera de alcance por ahora (no construir sin confirmarlo):
 
 - **profesionales** — id, nombre, telefono, zona, anios_experiencia, estado
   (pendiente / aprobado / rechazado), saldo_creditos, foto_url, descripcion,
-  telefono_referencia.
+  telefono_referencia, origen (autorregistro / agregado_manual). Los
+  agregados manualmente por un socio entran directo con estado = aprobado.
 - **solicitudes** — id, oficio, zona, descripcion, telefono_cliente,
   telefono_verificado (bool), creado_en.
 - **desbloqueos** — id, profesional_id (FK), solicitud_id (FK), creado_en.

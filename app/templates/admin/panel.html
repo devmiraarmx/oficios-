@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block titulo %}Panel — altas pendientes{% endblock %}
+
+{% block contenido %}
+<div style="display:flex; justify-content:space-between; align-items:center; gap:16px;">
+  <h1 style="margin:0">Cola de verificación</h1>
+  <a class="boton" href="{{ url_for('admin.alta_directa') }}">+ Alta directa</a>
+</div>
+<p class="hero__cota">{{ pendientes | length }} alta(s) pendiente(s) de aprobar.</p>
+
+{% if pendientes %}
+<table class="tabla">
+  <thead>
+    <tr>
+      <th>Profesional</th>
+      <th>Oficios</th>
+      <th>Teléfono</th>
+      <th>Referencia</th>
+      <th>Exp.</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in pendientes %}
+    <tr id="fila-{{ p.id }}">
+      <td>{{ p.nombre }}</td>
+      <td class="dato">{{ p.oficios | map(attribute='nombre') | join(', ') or '—' }}</td>
+      <td class="dato">{{ p.telefono }}</td>
+      <td class="dato">{{ p.telefono_referencia or '—' }}</td>
+      <td class="dato">{{ p.anios_experiencia }}</td>
+      <td>
+        <div class="acciones-fila">
+          <button class="boton"
+                  hx-post="{{ url_for('admin.aprobar', profesional_id=p.id) }}"
+                  hx-target="#fila-{{ p.id }}" hx-swap="outerHTML">Aprobar</button>
+          <button class="boton boton--peligro"
+                  hx-post="{{ url_for('admin.rechazar', profesional_id=p.id) }}"
+                  hx-target="#fila-{{ p.id }}" hx-swap="outerHTML">Rechazar</button>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No hay altas pendientes. 🎉</p>
+{% endif %}
+
+{% if aprobados %}
+<h2 style="margin-top:40px">Profesionales aprobados</h2>
+<p class="hero__cota">Comparte con cada uno su enlace de leads (acceso sin contraseña).</p>
+<table class="tabla">
+  <thead>
+    <tr><th>Profesional</th><th>Origen</th><th>Créditos</th><th>Enlace de leads</th></tr>
+  </thead>
+  <tbody>
+    {% for p in aprobados %}
+    <tr>
+      <td>{{ p.nombre }}</td>
+      <td class="dato">{{ p.origen.value }}</td>
+      <td class="dato">{{ p.saldo_creditos }}</td>
+      <td class="dato">
+        <a href="{{ url_for('profesionales.leads', token=p.token_acceso) }}">/profesionales/{{ p.token_acceso }}/leads</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}

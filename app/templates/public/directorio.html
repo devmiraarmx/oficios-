@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block titulo %}Directorio de profesionales{% endblock %}
+
+{% block contenido %}
+<h1>Directorio</h1>
+
+<form method="get" class="opciones" style="margin:18px 0 8px; align-items:flex-end;">
+  <div class="campo" style="margin:0">
+    <label for="oficio">Oficio</label>
+    <select name="oficio" id="oficio">
+      <option value="">Todos</option>
+      {% for o in oficios %}
+        <option value="{{ o.slug }}" {{ 'selected' if o.slug == oficio_sel }}>{{ o.nombre }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="campo" style="margin:0">
+    <label for="zona">Zona</label>
+    <select name="zona" id="zona">
+      <option value="">Todas</option>
+      {% for z in zonas %}
+        <option value="{{ z.slug }}" {{ 'selected' if z.slug == zona_sel }}>{{ z.nombre }} · {{ z.ciudad }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button class="boton" type="submit">Filtrar</button>
+</form>
+
+{% if profesionales %}
+  <div class="rejilla-fichas">
+    {% for profesional in profesionales %}
+      {% include "public/_ficha.html" %}
+    {% endfor %}
+  </div>
+{% else %}
+  <p>No hay profesionales que coincidan con el filtro.</p>
+{% endif %}
+{% endblock %}

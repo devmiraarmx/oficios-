@@ -1,0 +1,179 @@
+/* ==========================================================================
+   Sistema de diseño — plano técnico / cinta métrica
+   Paleta y tipografías confirmadas en CLAUDE.md. No reemplazar por un look
+   genérico de SaaS.
+   ========================================================================== */
+
+:root {
+  --papel:      #F7F5F0;
+  --tinta:      #1B2430;
+  --acento:     #E8622C;   /* naranja de seguridad */
+  --acento-h:   #C74E1F;   /* hover */
+  --acero:      #3C5A73;
+  --verificado: #3F6B4A;   /* musgo / verificado */
+  --borde:      #D8D3C7;
+
+  --fuente-titular: "Space Grotesk", system-ui, sans-serif;
+  --fuente-cuerpo:  "Inter", system-ui, sans-serif;
+  --fuente-mono:    "IBM Plex Mono", ui-monospace, monospace;
+
+  --radio: 4px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--fuente-cuerpo);
+  line-height: 1.55;
+  /* Retícula sutil de plano técnico */
+  background-image:
+    linear-gradient(var(--borde) 1px, transparent 1px),
+    linear-gradient(90deg, var(--borde) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: -1px -1px;
+  background-blend-mode: multiply;
+  background-attachment: fixed;
+  background-color: var(--papel);
+}
+
+.contenedor { width: min(1080px, 92%); margin-inline: auto; }
+
+h1, h2, h3 { font-family: var(--fuente-titular); line-height: 1.15; letter-spacing: -0.01em; }
+h1 { font-size: clamp(2rem, 5vw, 3rem); }
+
+a { color: var(--acero); text-decoration: none; }
+a:hover { color: var(--acento-h); }
+
+/* Datos y métricas siempre en mono */
+.dato, .metrica, .precio { font-family: var(--fuente-mono); }
+
+/* --------------------------------------------------------------------------
+   Cabecera / navegación
+   -------------------------------------------------------------------------- */
+.cabecera {
+  border-bottom: 1px solid var(--borde);
+  background: rgba(247, 245, 240, 0.85);
+  backdrop-filter: blur(4px);
+  position: sticky; top: 0; z-index: 10;
+}
+.cabecera__fila { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; }
+.marca { font-family: var(--fuente-titular); font-weight: 700; letter-spacing: 0.12em; color: var(--tinta); }
+.marca__cota { font-family: var(--fuente-mono); color: var(--acero); }
+.nav { display: flex; gap: 20px; align-items: center; }
+.nav a { color: var(--tinta); font-weight: 500; }
+.nav__cta {
+  background: var(--acento); color: var(--papel);
+  padding: 8px 14px; border-radius: var(--radio); font-weight: 600;
+}
+.nav__cta:hover { background: var(--acento-h); color: var(--papel); }
+
+main.contenedor { padding: 32px 0 64px; }
+
+/* --------------------------------------------------------------------------
+   Botones
+   -------------------------------------------------------------------------- */
+.boton {
+  display: inline-block; font-family: var(--fuente-titular); font-weight: 600;
+  background: var(--acento); color: var(--papel);
+  border: none; border-radius: var(--radio);
+  padding: 12px 20px; cursor: pointer; font-size: 1rem;
+}
+.boton:hover { background: var(--acento-h); color: var(--papel); }
+.boton--fantasma { background: transparent; color: var(--tinta); border: 1px solid var(--tinta); }
+.boton--peligro { background: transparent; color: var(--acento-h); border: 1px solid var(--acento-h); }
+
+/* --------------------------------------------------------------------------
+   Ficha técnica (tarjeta de profesional)
+   -------------------------------------------------------------------------- */
+.rejilla-fichas {
+  display: grid; gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  margin-top: 24px;
+}
+.ficha {
+  background: #fff;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 18px;
+  position: relative;
+}
+.ficha__titulo { margin: 0 0 4px; font-size: 1.2rem; }
+.ficha__renglon {
+  display: flex; justify-content: space-between; align-items: baseline;
+  border-bottom: 1px dotted var(--borde);   /* línea de cotas punteada */
+  padding: 6px 0; font-size: 0.9rem;
+}
+.ficha__etiqueta { color: var(--acero); text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.72rem; }
+.ficha__valor { font-family: var(--fuente-mono); }
+
+/* Sello circular rotado "verificado a mano" — elemento de marca central */
+.sello {
+  position: absolute; top: -14px; right: -14px;
+  width: 72px; height: 72px; border-radius: 50%;
+  border: 2px solid var(--verificado); color: var(--verificado);
+  background: var(--papel);
+  display: grid; place-content: center; text-align: center;
+  font-family: var(--fuente-mono); font-size: 0.55rem; line-height: 1.2;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  transform: rotate(-12deg);
+  box-shadow: 0 1px 0 var(--borde);
+}
+.sello span { display: block; font-weight: 500; }
+
+/* Estrellas de calificación */
+.estrellas { color: var(--acento); font-family: var(--fuente-mono); letter-spacing: 2px; }
+
+/* --------------------------------------------------------------------------
+   Formularios
+   -------------------------------------------------------------------------- */
+.formulario { max-width: 560px; }
+.campo { margin-bottom: 16px; }
+.campo label { display: block; font-weight: 600; margin-bottom: 6px; }
+.campo input, .campo select, .campo textarea {
+  width: 100%; padding: 10px 12px;
+  border: 1px solid var(--borde); border-radius: var(--radio);
+  font-family: var(--fuente-cuerpo); font-size: 1rem; background: #fff;
+}
+.campo textarea { min-height: 110px; resize: vertical; }
+.opciones { display: flex; flex-wrap: wrap; gap: 8px; }
+.opciones label {
+  font-weight: 500; border: 1px solid var(--borde); border-radius: var(--radio);
+  padding: 6px 10px; display: inline-flex; gap: 6px; align-items: center; cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   Avisos (flash)
+   -------------------------------------------------------------------------- */
+.aviso { padding: 12px 14px; border-radius: var(--radio); margin-bottom: 16px; border: 1px solid; }
+.aviso--error   { border-color: var(--acento-h); color: var(--acento-h); background: #fdeee8; }
+.aviso--success { border-color: var(--verificado); color: var(--verificado); background: #ecf3ee; }
+
+/* --------------------------------------------------------------------------
+   Hero de inicio + explicación de la verificación humana
+   -------------------------------------------------------------------------- */
+.hero { padding: 24px 0 8px; }
+.hero__cota { font-family: var(--fuente-mono); color: var(--acero); font-size: 0.85rem; }
+.hero p { max-width: 56ch; font-size: 1.1rem; }
+
+.explica-verificacion {
+  border: 1px dashed var(--verificado); border-radius: var(--radio);
+  padding: 18px; margin-top: 28px; background: #f0f5f1;
+}
+.explica-verificacion h3 { color: var(--verificado); margin-top: 0; }
+
+/* --------------------------------------------------------------------------
+   Tabla del panel admin
+   -------------------------------------------------------------------------- */
+.tabla { width: 100%; border-collapse: collapse; margin-top: 16px; background: #fff; }
+.tabla th, .tabla td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--borde); }
+.tabla th { font-family: var(--fuente-titular); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.acciones-fila { display: flex; gap: 8px; }
+
+/* --------------------------------------------------------------------------
+   Pie
+   -------------------------------------------------------------------------- */
+.pie { border-top: 1px solid var(--borde); padding: 28px 0; margin-top: 48px; }
+.pie__cota { font-family: var(--fuente-mono); color: var(--acero); font-size: 0.8rem; }

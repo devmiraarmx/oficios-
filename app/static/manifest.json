@@ -1,0 +1,14 @@
+{
+  "name": "Directorio de oficios",
+  "short_name": "Oficios",
+  "description": "Profesionales de oficios verificados a mano en tu zona.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F7F5F0",
+  "theme_color": "#1B2430",
+  "lang": "es-MX",
+  "icons": [
+    { "src": "/static/img/icono-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/static/img/icono-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

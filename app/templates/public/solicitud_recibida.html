@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block titulo %}Solicitud recibida{% endblock %}
+
+{% block contenido %}
+<section class="hero">
+  <p class="hero__cota">└── solicitud #{{ solicitud.id }} registrada ──</p>
+  <h1>¡Solicitud recibida!</h1>
+  <p>
+    Recibimos tu solicitud de <strong>{{ solicitud.oficio }}</strong> en
+    <strong>{{ solicitud.zona }}</strong>. En breve te enviaremos un código por
+    SMS para confirmar tu número; en cuanto lo confirmes, avisaremos a los
+    profesionales verificados de tu zona.
+  </p>
+  <p><a class="boton" href="{{ url_for('public.inicio') }}">Volver al inicio</a></p>
+</section>
+{% endblock %}

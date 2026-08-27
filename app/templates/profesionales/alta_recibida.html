@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block titulo %}Registro recibido{% endblock %}
+
+{% block contenido %}
+<section class="hero">
+  <p class="hero__cota">└── registro en cola de verificación ──</p>
+  <h1>Registro recibido</h1>
+  <p>
+    Gracias. Tu registro entró a nuestra cola de verificación. En los próximos
+    días te llamaremos para confirmar tus datos y contactaremos a tu referencia.
+    Una vez aprobado, aparecerás en el directorio y podrás recibir solicitudes.
+  </p>
+  <p><a class="boton" href="{{ url_for('public.inicio') }}">Volver al inicio</a></p>
+</section>
+{% endblock %}

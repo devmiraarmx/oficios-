@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block titulo %}{{ profesional.nombre }} — {{ profesional.oficios | map(attribute='nombre') | join(', ') }}{% endblock %}
+
+{% block contenido %}
+<article class="ficha" style="max-width:680px; margin-top:24px;">
+  <div class="sello" aria-label="Verificado a mano">
+    <span>verificado</span><span>a&nbsp;mano</span>
+  </div>
+
+  <h1 style="margin-top:0">{{ profesional.nombre }}</h1>
+
+  <div class="ficha__renglon">
+    <span class="ficha__etiqueta">Oficio</span>
+    <span class="ficha__valor">{{ profesional.oficios | map(attribute='nombre') | join(', ') or '—' }}</span>
+  </div>
+  <div class="ficha__renglon">
+    <span class="ficha__etiqueta">Experiencia</span>
+    <span class="ficha__valor">{{ profesional.anios_experiencia }} años</span>
+  </div>
+  <div class="ficha__renglon">
+    <span class="ficha__etiqueta">Zona de cobertura</span>
+    <span class="ficha__valor">{{ profesional.zona or (profesional.zonas | map(attribute='nombre') | join(', ')) or '—' }}</span>
+  </div>
+  <div class="ficha__renglon">
+    <span class="ficha__etiqueta">Calificación</span>
+    <span class="ficha__valor">
+      {% if profesional.calificacion_promedio %}
+        <span class="estrellas">{{ '★' * (profesional.calificacion_promedio | round(0, 'floor') | int) }}</span>
+        {{ profesional.calificacion_promedio }} / 5.0
+      {% else %}Sin reseñas todavía{% endif %}
+    </span>
+  </div>
+
+  {% if profesional.descripcion %}
+    <p style="margin-top:16px">{{ profesional.descripcion }}</p>
+  {% endif %}
+
+  <p style="margin-top:20px">
+    <a class="boton" href="{{ url_for('public.solicitar') }}">Solicitar a este profesional</a>
+  </p>
+  <p class="hero__cota">El contacto directo se comparte con el profesional cuando toma tu solicitud.</p>
+</article>
+
+{% if profesional.resenas %}
+<section style="margin-top:32px">
+  <h2>Reseñas</h2>
+  {% for resena in profesional.resenas %}
+    <div class="ficha" style="margin-bottom:12px">
+      <span class="estrellas">{{ '★' * resena.calificacion }}{{ '☆' * (5 - resena.calificacion) }}</span>
+      {% if resena.comentario %}<p style="margin:8px 0 0">{{ resena.comentario }}</p>{% endif %}
+    </div>
+  {% endfor %}
+</section>
+{% endif %}
+{% endblock %}
