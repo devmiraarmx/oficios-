@@ -96,11 +96,24 @@ También construido: **flujo de leads y créditos** — bandeja del profesional
 crédito de forma atómica e idempotente (registra `desbloqueos` y
 `movimientos_credito`), y compra de créditos por paquetes escalonados.
 
+Y **notificaciones Web Push** — el profesional activa las notificaciones desde
+su bandeja (VAPID + service worker); cuando llega un lead válido que coincide
+con su oficio y zona se le envía un push con `pywebpush`. Genera las llaves con:
+
+```bash
+flask vapid-keys      # copia la salida al .env
+```
+
+Si no hay llaves VAPID configuradas, el push se omite en silencio (la app
+sigue funcionando en local sin configurarlo).
+
 Pendiente de conectar (marcado con `TODO` en el código):
 
 - Verificación del teléfono del cliente por SMS (Twilio Verify) — hoy la
-  bandeja solo muestra solicitudes ya marcadas como verificadas.
-- Notificación push a profesionales al llegar un lead que coincide.
+  bandeja solo muestra solicitudes ya marcadas como verificadas, y el push se
+  dispara cuando `telefono_verificado` pasa a True (ese punto lo activará
+  Twilio).
+- Respaldo de notificación (SMS/correo) para iOS < 16.4 o sin PWA instalada.
 - Pasarela de pago real (Stripe / Conekta): la compra de créditos está
   simulada; falta crear la sesión de pago y acreditar vía webhook.
 - Subida de foto de perfil a Cloudinary.

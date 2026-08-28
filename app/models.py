@@ -138,6 +138,9 @@ class Profesional(db.Model):
     desbloqueos = db.relationship("Desbloqueo", back_populates="profesional")
     movimientos = db.relationship("MovimientoCredito", back_populates="profesional")
     resenas = db.relationship("Resena", back_populates="profesional")
+    suscripciones_push = db.relationship(
+        "SuscripcionPush", back_populates="profesional", cascade="all, delete-orphan"
+    )
 
     @property
     def aprobado(self) -> bool:
@@ -218,6 +221,29 @@ class MovimientoCredito(db.Model):
 
     def __repr__(self) -> str:
         return f"<MovimientoCredito {self.tipo.value} {self.cantidad}>"
+
+
+class SuscripcionPush(db.Model):
+    """Suscripción del navegador de un profesional a notificaciones Web Push.
+    Un profesional puede tener varias (varios dispositivos/navegadores).
+    """
+    __tablename__ = "suscripciones_push"
+
+    id = db.Column(db.Integer, primary_key=True)
+    profesional_id = db.Column(db.ForeignKey("profesionales.id"), nullable=False, index=True)
+    endpoint = db.Column(db.String(500), nullable=False, unique=True)
+    p256dh = db.Column(db.String(200), nullable=False)
+    auth = db.Column(db.String(100), nullable=False)
+    creado_en = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    profesional = db.relationship("Profesional", back_populates="suscripciones_push")
+
+    def info(self) -> dict:
+        """Formato que espera pywebpush."""
+        return {"endpoint": self.endpoint, "keys": {"p256dh": self.p256dh, "auth": self.auth}}
+
+    def __repr__(self) -> str:
+        return f"<SuscripcionPush prof={self.profesional_id}>"
 
 
 class Resena(db.Model):

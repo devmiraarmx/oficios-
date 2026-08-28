@@ -105,8 +105,13 @@ def solicitar():
 
         db.session.add(solicitud)
         db.session.commit()
-        # TODO: disparar verificación por SMS (Twilio Verify) y, una vez
-        # verificado, notificar por push a los profesionales que coincidan.
+        # TODO: disparar verificación por SMS (Twilio Verify). Una vez que la
+        # solicitud queda verificada se notifica a los profesionales que
+        # coincidan; ese paso ya está implementado abajo y se activará cuando
+        # `telefono_verificado` pase a True en el flujo de Twilio.
+        if solicitud.telefono_verificado:
+            from app.notificaciones import notificar_nuevo_lead
+            notificar_nuevo_lead(solicitud)
         return redirect(url_for("public.solicitud_recibida", solicitud_id=solicitud.id))
 
     return render_template(

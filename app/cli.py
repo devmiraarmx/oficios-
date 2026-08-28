@@ -94,3 +94,13 @@ def registrar_comandos(app: Flask) -> None:
             db.session.commit()
 
         click.echo("Seed completado: catálogos, demo y solicitudes listos.")
+
+    @app.cli.command("vapid-keys")
+    def vapid_keys():
+        """Genera un par de llaves VAPID para Web Push. Copia la salida al .env."""
+        from app.notificaciones import generar_llaves_vapid
+
+        pub, priv = generar_llaves_vapid()
+        click.echo("VAPID_PUBLIC_KEY=" + pub)
+        click.echo("VAPID_PRIVATE_KEY=" + priv)
+        click.echo("VAPID_CLAIM_EMAIL=mailto:contacto@ejemplo.mx")
