@@ -107,6 +107,11 @@ flask vapid-keys      # copia la salida al .env
 Si no hay llaves VAPID configuradas, el push se omite en silencio (la app
 sigue funcionando en local sin configurarlo).
 
+Y **carga de foto de perfil** del profesional — en el alta pública y en el alta
+directa del admin. Usa Cloudinary cuando hay `CLOUDINARY_URL`; si no, guarda en
+`static/uploads/` (fallback local para trabajar sin cuenta). La foto se muestra
+en el directorio y el perfil; si no hay, se usa un avatar con la inicial.
+
 Pendiente de conectar (marcado con `TODO` en el código):
 
 - Verificación del teléfono del cliente por SMS (Twilio Verify) — hoy la
@@ -116,6 +121,7 @@ Pendiente de conectar (marcado con `TODO` en el código):
 - Respaldo de notificación (SMS/correo) para iOS < 16.4 o sin PWA instalada.
 - Pasarela de pago real (Stripe / Conekta): la compra de créditos está
   simulada; falta crear la sesión de pago y acreditar vía webhook.
-- Subida de foto de perfil a Cloudinary.
+- Portafolio de fotos de trabajos hechos (fuera de alcance por ahora; buen
+  candidato a agregar pronto).
 - Envío automático del enlace de leads al profesional al aprobarlo
   (hoy se copia desde el panel de admin).

@@ -56,6 +56,20 @@ def alta():
                 zonas=Zona.query.order_by(Zona.nombre).all(),
             )
 
+        # Foto de perfil (opcional)
+        from app.almacenamiento import guardar_imagen, ImagenInvalida
+        try:
+            url_foto = guardar_imagen(request.files.get("foto"))
+            if url_foto:
+                profesional.foto_url = url_foto
+        except ImagenInvalida as e:
+            flash(str(e), "error")
+            return render_template(
+                "profesionales/alta.html",
+                oficios=Oficio.query.order_by(Oficio.nombre).all(),
+                zonas=Zona.query.order_by(Zona.nombre).all(),
+            )
+
         # Agregamos a la sesión antes de asignar relaciones para evitar que el
         # autoflush intente persistir un objeto que aún no está en la sesión.
         db.session.add(profesional)

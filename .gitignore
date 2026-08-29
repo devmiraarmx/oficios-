@@ -23,3 +23,6 @@ __pycache__/
 
 # Flask instance folder (BD local)
 instance/
+
+# Subidas locales (fallback sin Cloudinary)
+app/static/uploads/

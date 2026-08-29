@@ -27,6 +27,9 @@ class Config:
     SQLALCHEMY_DATABASE_URI = _normalizar_url_bd(os.getenv("DATABASE_URL"))
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    # Tamaño máximo de subida (foto de perfil). 5 MB.
+    MAX_CONTENT_LENGTH = 5 * 1024 * 1024
+
     # Créditos: cuántos se descuentan al desbloquear un lead.
     CREDITOS_POR_LEAD = 1
 

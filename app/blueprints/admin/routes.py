@@ -58,6 +58,19 @@ def alta_directa():
                 zonas=Zona.query.order_by(Zona.nombre).all(),
             )
 
+        from app.almacenamiento import guardar_imagen, ImagenInvalida
+        try:
+            url_foto = guardar_imagen(request.files.get("foto"))
+            if url_foto:
+                profesional.foto_url = url_foto
+        except ImagenInvalida as e:
+            flash(str(e), "error")
+            return render_template(
+                "admin/alta_directa.html",
+                oficios=Oficio.query.order_by(Oficio.nombre).all(),
+                zonas=Zona.query.order_by(Zona.nombre).all(),
+            )
+
         db.session.add(profesional)
 
         oficio_ids = request.form.getlist("oficios")

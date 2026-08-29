@@ -5,9 +5,16 @@
     <span>verificado</span><span>a&nbsp;mano</span>
   </div>
 
-  <h3 class="ficha__titulo">
-    <a href="{{ url_for('public.perfil_profesional', profesional_id=profesional.id) }}">{{ profesional.nombre }}</a>
-  </h3>
+  <div class="ficha__encabezado">
+    {% if profesional.foto_url %}
+      <img class="avatar" src="{{ profesional.foto_url }}" alt="Foto de {{ profesional.nombre }}">
+    {% else %}
+      <span class="avatar avatar--placeholder">{{ profesional.nombre[:1] }}</span>
+    {% endif %}
+    <h3 class="ficha__titulo" style="margin:0">
+      <a href="{{ url_for('public.perfil_profesional', profesional_id=profesional.id) }}">{{ profesional.nombre }}</a>
+    </h3>
+  </div>
 
   <div class="ficha__renglon">
     <span class="ficha__etiqueta">Oficio</span>

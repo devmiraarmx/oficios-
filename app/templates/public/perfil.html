@@ -7,7 +7,14 @@
     <span>verificado</span><span>a&nbsp;mano</span>
   </div>
 
-  <h1 style="margin-top:0">{{ profesional.nombre }}</h1>
+  <div class="ficha__encabezado" style="margin-bottom:12px">
+    {% if profesional.foto_url %}
+      <img class="avatar avatar--grande" src="{{ profesional.foto_url }}" alt="Foto de {{ profesional.nombre }}">
+    {% else %}
+      <span class="avatar avatar--grande avatar--placeholder">{{ profesional.nombre[:1] }}</span>
+    {% endif %}
+    <h1 style="margin:0">{{ profesional.nombre }}</h1>
+  </div>
 
   <div class="ficha__renglon">
     <span class="ficha__etiqueta">Oficio</span>

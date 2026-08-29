@@ -109,6 +109,19 @@ main.contenedor { padding: 32px 0 64px; }
 .ficha__etiqueta { color: var(--acero); text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.72rem; }
 .ficha__valor { font-family: var(--fuente-mono); }
 
+/* Avatar / foto de perfil */
+.avatar {
+  width: 56px; height: 56px; border-radius: 50%;
+  object-fit: cover; border: 1px solid var(--borde); background: var(--papel);
+}
+.avatar--grande { width: 96px; height: 96px; }
+.avatar--placeholder {
+  display: grid; place-content: center;
+  font-family: var(--fuente-mono); color: var(--acero);
+  font-size: 1.1rem; text-transform: uppercase;
+}
+.ficha__encabezado { display: flex; gap: 12px; align-items: center; margin-bottom: 6px; }
+
 /* Sello circular rotado "verificado a mano" — elemento de marca central */
 .sello {
   position: absolute; top: -14px; right: -14px;
