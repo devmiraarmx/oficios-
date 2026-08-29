@@ -68,6 +68,19 @@
     </div>
   </footer>
 
+  <!-- Banner de instalación de la PWA (se muestra solo si aplica) -->
+  <div id="instalar-banner" class="instalar-banner" hidden>
+    <img class="instalar-banner__icono" src="{{ url_for('static', filename='img/icono-192.png') }}" alt="">
+    <div class="instalar-banner__texto">
+      <strong>Instala nuestra app en tu móvil</strong>
+      <span id="instalar-banner__sub">Acceso rápido desde tu pantalla de inicio</span>
+    </div>
+    <div class="instalar-banner__acciones">
+      <button id="instalar-btn" class="boton" type="button">Instalar</button>
+      <button id="instalar-cerrar" class="boton boton--fantasma" type="button" aria-label="Cerrar">✕</button>
+    </div>
+  </div>
+
   <script>
     // Registro del service worker (PWA)
     if ('serviceWorker' in navigator) {
@@ -76,5 +89,6 @@
       });
     }
   </script>
+  <script src="{{ url_for('static', filename='js/instalar.js') }}" defer></script>
 </body>
 </html>

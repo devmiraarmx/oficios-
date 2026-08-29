@@ -72,6 +72,30 @@ a:hover { color: var(--acento-h); }
 
 main.contenedor { padding: 32px 0 64px; }
 
+/* Banner de instalación de la PWA */
+.instalar-banner {
+  position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 50;
+  max-width: 520px; margin-inline: auto;
+  background: #fff; border: 1px solid var(--borde); border-radius: var(--radio);
+  box-shadow: 0 8px 28px rgba(27, 36, 48, 0.18);
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+}
+.instalar-banner__icono {
+  width: 44px; height: 44px; border-radius: 10px; flex: 0 0 auto;
+  border: 1px solid var(--borde);
+}
+.instalar-banner__texto { flex: 1 1 auto; min-width: 0; }
+.instalar-banner__texto strong { font-family: var(--fuente-titular); display: block; font-size: 0.98rem; }
+.instalar-banner__texto span { font-size: 0.82rem; color: var(--acero); }
+.instalar-banner__acciones { display: flex; gap: 8px; align-items: center; flex: 0 0 auto; }
+.instalar-banner .boton { padding: 10px 14px; }
+#instalar-cerrar { padding: 10px 12px; line-height: 1; }
+
+@media (max-width: 480px) {
+  .instalar-banner { flex-wrap: wrap; }
+  .instalar-banner__acciones { width: 100%; justify-content: flex-end; }
+}
+
 /* Cinta de modo demostración */
 .cinta-demo {
   background: var(--acero); color: var(--papel);
