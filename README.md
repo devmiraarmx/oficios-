@@ -102,6 +102,14 @@ La carpeta `migrations/` está versionada, con la migración inicial ya generada
 
 El endpoint `/salud` sirve como health check.
 
+### Modo demo
+
+Para mostrarlo a un cliente de punta a punta antes de conectar Twilio, define
+`DEMO_MODE=1`. Con esto, una solicitud creada en vivo se marca como verificada
+al instante (salta el SMS) y aparece de inmediato en la bandeja del profesional
+que coincide; los pagos siguen simulados. Se muestra una cinta "Modo
+demostración" en todas las páginas. **Déjalo apagado en producción real.**
+
 ## Estado actual
 
 Construido: esqueleto Flask, modelos de datos, directorio + landing SEO +

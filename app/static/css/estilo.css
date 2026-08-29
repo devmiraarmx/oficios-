@@ -72,6 +72,13 @@ a:hover { color: var(--acento-h); }
 
 main.contenedor { padding: 32px 0 64px; }
 
+/* Cinta de modo demostración */
+.cinta-demo {
+  background: var(--acero); color: var(--papel);
+  font-family: var(--fuente-mono); font-size: 0.78rem; letter-spacing: 0.02em;
+  text-align: center; padding: 7px 12px;
+}
+
 /* --------------------------------------------------------------------------
    Botones
    -------------------------------------------------------------------------- */
