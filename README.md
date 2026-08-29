@@ -74,16 +74,33 @@ aprobado.
 
 ## Base de datos y migraciones
 
-En local, `flask seed` usa `db.create_all()` para arrancar rápido con SQLite.
-Para producción con Postgres, el flujo con Flask-Migrate es:
+La carpeta `migrations/` está versionada, con la migración inicial ya generada.
 
-```bash
-flask db init        # una sola vez
-flask db migrate -m "esquema inicial"
-flask db upgrade
-```
+- **Local rápido:** `flask seed` usa `db.create_all()` y siembra catálogos +
+  datos de demo (SQLite, sin configurar nada).
+- **Producción / esquema real:** `flask db upgrade` aplica las migraciones. El
+  `Procfile` lo corre solo en el paso `release` de cada despliegue.
+- Cuando cambie el modelo: `flask db migrate -m "descripción"` genera la nueva
+  migración; revísala y commitéala.
 
-El `Procfile` corre `flask db upgrade` en el paso `release` de cada despliegue.
+## Despliegue en Railway
+
+1. Crea un proyecto en Railway y agrega el plugin **PostgreSQL** (inyecta
+   `DATABASE_URL` automáticamente).
+2. Conecta este repositorio; Railway detecta Python (Nixpacks) e instala
+   `requirements.txt`.
+3. Define las variables de entorno en el servicio (ver `.env.example`):
+   - **Obligatoria:** `SECRET_KEY` (cadena larga y aleatoria).
+   - **Recomendada:** `CLOUDINARY_URL` — sin ella, las fotos de perfil se
+     guardan en disco local, que en Railway es **efímero** (se pierden al
+     redeploy). Para que las fotos persistan, configúrala.
+   - **Opcionales (activan cada módulo):** `VAPID_*` (push), `TWILIO_*` (SMS,
+     pendiente), `STRIPE_*` (pagos, pendiente).
+4. El `release` corre `flask db upgrade` (crea el esquema en Postgres).
+5. Tras el primer deploy, siembra los catálogos de oficios/zonas una vez:
+   `flask seed` desde la consola de Railway (o cárgalos por el panel de admin).
+
+El endpoint `/salud` sirve como health check.
 
 ## Estado actual
 
