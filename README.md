@@ -74,16 +74,41 @@ aprobado.
 
 ## Base de datos y migraciones
 
-En local, `flask seed` usa `db.create_all()` para arrancar rápido con SQLite.
-Para producción con Postgres, el flujo con Flask-Migrate es:
+La carpeta `migrations/` está versionada, con la migración inicial ya generada.
 
-```bash
-flask db init        # una sola vez
-flask db migrate -m "esquema inicial"
-flask db upgrade
-```
+- **Local rápido:** `flask seed` usa `db.create_all()` y siembra catálogos +
+  datos de demo (SQLite, sin configurar nada).
+- **Producción / esquema real:** `flask db upgrade` aplica las migraciones. El
+  `Procfile` lo corre solo en el paso `release` de cada despliegue.
+- Cuando cambie el modelo: `flask db migrate -m "descripción"` genera la nueva
+  migración; revísala y commitéala.
 
-El `Procfile` corre `flask db upgrade` en el paso `release` de cada despliegue.
+## Despliegue en Railway
+
+1. Crea un proyecto en Railway y agrega el plugin **PostgreSQL** (inyecta
+   `DATABASE_URL` automáticamente).
+2. Conecta este repositorio; Railway detecta Python (Nixpacks) e instala
+   `requirements.txt`.
+3. Define las variables de entorno en el servicio (ver `.env.example`):
+   - **Obligatoria:** `SECRET_KEY` (cadena larga y aleatoria).
+   - **Recomendada:** `CLOUDINARY_URL` — sin ella, las fotos de perfil se
+     guardan en disco local, que en Railway es **efímero** (se pierden al
+     redeploy). Para que las fotos persistan, configúrala.
+   - **Opcionales (activan cada módulo):** `VAPID_*` (push), `TWILIO_*` (SMS,
+     pendiente), `STRIPE_*` (pagos, pendiente).
+4. El `release` corre `flask db upgrade` (crea el esquema en Postgres).
+5. Tras el primer deploy, siembra los catálogos de oficios/zonas una vez:
+   `flask seed` desde la consola de Railway (o cárgalos por el panel de admin).
+
+El endpoint `/salud` sirve como health check.
+
+### Modo demo
+
+Para mostrarlo a un cliente de punta a punta antes de conectar Twilio, define
+`DEMO_MODE=1`. Con esto, una solicitud creada en vivo se marca como verificada
+al instante (salta el SMS) y aparece de inmediato en la bandeja del profesional
+que coincide; los pagos siguen simulados. Se muestra una cinta "Modo
+demostración" en todas las páginas. **Déjalo apagado en producción real.**
 
 ## Estado actual
 
@@ -96,13 +121,32 @@ También construido: **flujo de leads y créditos** — bandeja del profesional
 crédito de forma atómica e idempotente (registra `desbloqueos` y
 `movimientos_credito`), y compra de créditos por paquetes escalonados.
 
+Y **notificaciones Web Push** — el profesional activa las notificaciones desde
+su bandeja (VAPID + service worker); cuando llega un lead válido que coincide
+con su oficio y zona se le envía un push con `pywebpush`. Genera las llaves con:
+
+```bash
+flask vapid-keys      # copia la salida al .env
+```
+
+Si no hay llaves VAPID configuradas, el push se omite en silencio (la app
+sigue funcionando en local sin configurarlo).
+
+Y **carga de foto de perfil** del profesional — en el alta pública y en el alta
+directa del admin. Usa Cloudinary cuando hay `CLOUDINARY_URL`; si no, guarda en
+`static/uploads/` (fallback local para trabajar sin cuenta). La foto se muestra
+en el directorio y el perfil; si no hay, se usa un avatar con la inicial.
+
 Pendiente de conectar (marcado con `TODO` en el código):
 
 - Verificación del teléfono del cliente por SMS (Twilio Verify) — hoy la
-  bandeja solo muestra solicitudes ya marcadas como verificadas.
-- Notificación push a profesionales al llegar un lead que coincide.
+  bandeja solo muestra solicitudes ya marcadas como verificadas, y el push se
+  dispara cuando `telefono_verificado` pasa a True (ese punto lo activará
+  Twilio).
+- Respaldo de notificación (SMS/correo) para iOS < 16.4 o sin PWA instalada.
 - Pasarela de pago real (Stripe / Conekta): la compra de créditos está
   simulada; falta crear la sesión de pago y acreditar vía webhook.
-- Subida de foto de perfil a Cloudinary.
+- Portafolio de fotos de trabajos hechos (fuera de alcance por ahora; buen
+  candidato a agregar pronto).
 - Envío automático del enlace de leads al profesional al aprobarlo
   (hoy se copia desde el panel de admin).

@@ -33,6 +33,12 @@
     </div>
   </header>
 
+  {% if config.DEMO_MODE %}
+    <div class="cinta-demo">
+      Modo demostración · las solicitudes se activan sin verificación por SMS y los pagos son simulados
+    </div>
+  {% endif %}
+
   <main class="contenedor">
     {% with mensajes = get_flashed_messages(with_categories=true) %}
       {% if mensajes %}

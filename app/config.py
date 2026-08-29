@@ -9,6 +9,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+def _es_verdadero(valor: str | None) -> bool:
+    return (valor or "").strip().lower() in {"1", "true", "yes", "on", "si", "sí"}
+
+
 def _normalizar_url_bd(url: str | None) -> str:
     """Railway/Heroku a veces entregan la URL como `postgres://`.
     SQLAlchemy espera `postgresql://`. Si no hay URL, cae a SQLite local
@@ -26,6 +30,15 @@ class Config:
 
     SQLALCHEMY_DATABASE_URI = _normalizar_url_bd(os.getenv("DATABASE_URL"))
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # Tamaño máximo de subida (foto de perfil). 5 MB.
+    MAX_CONTENT_LENGTH = 5 * 1024 * 1024
+
+    # Modo demo: salta la verificación por SMS (Twilio aún no conectado) y marca
+    # las solicitudes como verificadas al crearse, para que aparezcan de
+    # inmediato en la bandeja del profesional. SOLO para mostrar el flujo
+    # completo; en producción real debe quedar apagado.
+    DEMO_MODE = _es_verdadero(os.getenv("DEMO_MODE"))
 
     # Créditos: cuántos se descuentan al desbloquear un lead.
     CREDITOS_POR_LEAD = 1

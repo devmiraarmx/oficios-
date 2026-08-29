@@ -13,6 +13,7 @@
     <div class="ficha__etiqueta">Saldo</div>
     <div class="precio" style="font-size:1.6rem">{{ profesional.saldo_creditos }} <span style="font-size:0.9rem">créditos</span></div>
     <a class="boton boton--fantasma" href="{{ url_for('profesionales.creditos', token=profesional.token_acceso) }}">Comprar créditos</a>
+    <button id="btn-push" class="boton boton--fantasma" type="button">Activar notificaciones</button>
   </div>
 </div>
 
@@ -65,4 +66,9 @@
     avisaremos por notificación cuando llegue uno.
   </p>
 {% endif %}
+
+<script>
+  window.OFICIOS_PUSH = { base: "{{ url_for('profesionales.leads', token=profesional.token_acceso)[:-6] }}" };
+</script>
+<script src="{{ url_for('static', filename='js/push.js') }}" defer></script>
 {% endblock %}

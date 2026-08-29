@@ -14,8 +14,8 @@ __pycache__/
 *.sqlite3
 *.db
 
-# Migraciones generadas localmente durante desarrollo temprano
-# (cuando se estabilice el esquema, versionar la carpeta migrations/)
+# La carpeta migrations/ SÍ se versiona (Railway corre `flask db upgrade` en
+# release). No la ignoramos.
 
 # Sistema
 .DS_Store
@@ -23,3 +23,6 @@ __pycache__/
 
 # Flask instance folder (BD local)
 instance/
+
+# Subidas locales (fallback sin Cloudinary)
+app/static/uploads/

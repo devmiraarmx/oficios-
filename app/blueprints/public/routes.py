@@ -5,7 +5,7 @@ En esta primera iteración las vistas renderizan datos reales cuando existen
 en la base; el flujo de verificación por SMS, el pago del lead y el push se
 conectan en iteraciones siguientes (ver TODOs).
 """
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, current_app
 
 from app.blueprints.public import bp
 from app.extensions import db
@@ -103,10 +103,21 @@ def solicitar():
             return render_template("public/solicitar.html",
                                    oficios=Oficio.query.order_by(Oficio.nombre).all())
 
+        # En modo demo saltamos la verificación por SMS (Twilio aún no está) y
+        # damos la solicitud por verificada, para que llegue de inmediato a la
+        # bandeja del profesional durante una demostración en vivo.
+        if current_app.config.get("DEMO_MODE"):
+            solicitud.telefono_verificado = True
+
         db.session.add(solicitud)
         db.session.commit()
-        # TODO: disparar verificación por SMS (Twilio Verify) y, una vez
-        # verificado, notificar por push a los profesionales que coincidan.
+
+        # TODO: disparar verificación por SMS (Twilio Verify). Cuando la
+        # solicitud queda verificada se notifica a los profesionales que
+        # coincidan (esto ya se activa aquí y con Twilio será el mismo camino).
+        if solicitud.telefono_verificado:
+            from app.notificaciones import notificar_nuevo_lead
+            notificar_nuevo_lead(solicitud)
         return redirect(url_for("public.solicitud_recibida", solicitud_id=solicitud.id))
 
     return render_template(

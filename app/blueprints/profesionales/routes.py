@@ -56,6 +56,20 @@ def alta():
                 zonas=Zona.query.order_by(Zona.nombre).all(),
             )
 
+        # Foto de perfil (opcional)
+        from app.almacenamiento import guardar_imagen, ImagenInvalida
+        try:
+            url_foto = guardar_imagen(request.files.get("foto"))
+            if url_foto:
+                profesional.foto_url = url_foto
+        except ImagenInvalida as e:
+            flash(str(e), "error")
+            return render_template(
+                "profesionales/alta.html",
+                oficios=Oficio.query.order_by(Oficio.nombre).all(),
+                zonas=Zona.query.order_by(Zona.nombre).all(),
+            )
+
         # Agregamos a la sesión antes de asignar relaciones para evitar que el
         # autoflush intente persistir un objeto que aún no está en la sesión.
         db.session.add(profesional)
@@ -164,3 +178,54 @@ def comprar_creditos(token, indice):
         "success",
     )
     return redirect(url_for("profesionales.creditos", token=token))
+
+
+# --------------------------------------------------------------------------
+# Suscripción a notificaciones Web Push
+# --------------------------------------------------------------------------
+@bp.route("/<token>/push/clave-publica")
+def push_clave_publica(token):
+    _profesional_por_token(token)
+    from app.notificaciones import clave_publica
+
+    clave = clave_publica()
+    if not clave:
+        return {"habilitado": False}, 200
+    return {"habilitado": True, "clave": clave}, 200
+
+
+@bp.route("/<token>/push/suscribir", methods=["POST"])
+def push_suscribir(token):
+    profesional = _profesional_por_token(token)
+    from app.models import SuscripcionPush
+
+    datos = request.get_json(silent=True) or {}
+    endpoint = datos.get("endpoint")
+    claves = datos.get("keys") or {}
+    p256dh, auth = claves.get("p256dh"), claves.get("auth")
+    if not (endpoint and p256dh and auth):
+        return {"ok": False, "error": "suscripción incompleta"}, 400
+
+    # Upsert por endpoint (evita duplicados si se resuscribe el mismo navegador).
+    suscripcion = SuscripcionPush.query.filter_by(endpoint=endpoint).first()
+    if suscripcion is None:
+        suscripcion = SuscripcionPush(endpoint=endpoint)
+        db.session.add(suscripcion)
+    suscripcion.profesional_id = profesional.id
+    suscripcion.p256dh = p256dh
+    suscripcion.auth = auth
+    db.session.commit()
+    return {"ok": True}, 201
+
+
+@bp.route("/<token>/push/baja", methods=["POST"])
+def push_baja(token):
+    _profesional_por_token(token)
+    from app.models import SuscripcionPush
+
+    datos = request.get_json(silent=True) or {}
+    endpoint = datos.get("endpoint")
+    if endpoint:
+        SuscripcionPush.query.filter_by(endpoint=endpoint).delete()
+        db.session.commit()
+    return {"ok": True}, 200
