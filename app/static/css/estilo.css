@@ -55,12 +55,12 @@ a:hover { color: var(--acento-h); }
    -------------------------------------------------------------------------- */
 .cabecera {
   border-bottom: 1px solid var(--borde);
-  background: rgba(247, 245, 240, 0.85);
-  backdrop-filter: blur(4px);
+  background: rgba(247, 245, 240, 0.97);
+  backdrop-filter: blur(6px);
   position: sticky; top: 0; z-index: 10;
 }
-.cabecera__fila { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; }
-.marca { font-family: var(--fuente-titular); font-weight: 700; letter-spacing: 0.12em; color: var(--tinta); }
+.cabecera__fila { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 0; }
+.marca { font-family: var(--fuente-titular); font-weight: 700; letter-spacing: 0.12em; color: var(--tinta); white-space: nowrap; }
 .marca__cota { font-family: var(--fuente-mono); color: var(--acero); }
 .nav { display: flex; gap: 20px; align-items: center; }
 .nav a { color: var(--tinta); font-weight: 500; }
@@ -69,6 +69,15 @@ a:hover { color: var(--acento-h); }
   padding: 8px 14px; border-radius: var(--radio); font-weight: 600;
 }
 .nav__cta:hover { background: var(--acento-h); color: var(--papel); }
+
+/* Encabezado en móvil: marca arriba, navegación en su propia fila */
+@media (max-width: 640px) {
+  .cabecera__fila { flex-wrap: wrap; gap: 8px; padding: 10px 0; }
+  .marca { font-size: 0.95rem; letter-spacing: 0.06em; }
+  .nav { width: 100%; gap: 10px; justify-content: space-between; }
+  .nav a { font-size: 0.9rem; }
+  .nav__cta { padding: 7px 10px; white-space: nowrap; }
+}
 
 main.contenedor { padding: 32px 0 64px; }
 
@@ -176,16 +185,22 @@ main.contenedor { padding: 32px 0 64px; }
 .formulario { max-width: 560px; }
 .campo { margin-bottom: 16px; }
 .campo label { display: block; font-weight: 600; margin-bottom: 6px; }
-.campo input, .campo select, .campo textarea {
+/* width:100% solo para campos de texto: NO para checkboxes ni radios
+   (si no, los casilleros se estiran y se enciman con el texto). */
+.campo input:not([type="checkbox"]):not([type="radio"]),
+.campo select, .campo textarea {
   width: 100%; padding: 10px 12px;
   border: 1px solid var(--borde); border-radius: var(--radio);
   font-family: var(--fuente-cuerpo); font-size: 1rem; background: #fff;
 }
 .campo textarea { min-height: 110px; resize: vertical; }
+.campo input[type="checkbox"], .campo input[type="radio"] {
+  width: auto; flex: 0 0 auto; margin: 0;
+}
 .opciones { display: flex; flex-wrap: wrap; gap: 8px; }
 .opciones label {
   font-weight: 500; border: 1px solid var(--borde); border-radius: var(--radio);
-  padding: 6px 10px; display: inline-flex; gap: 6px; align-items: center; cursor: pointer;
+  padding: 8px 12px; display: inline-flex; gap: 8px; align-items: center; cursor: pointer;
 }
 
 /* --------------------------------------------------------------------------
