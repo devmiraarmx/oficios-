@@ -236,3 +236,57 @@ main.contenedor { padding: 32px 0 64px; }
    -------------------------------------------------------------------------- */
 .pie { border-top: 1px solid var(--borde); padding: 28px 0; margin-top: 48px; }
 .pie__cota { font-family: var(--fuente-mono); color: var(--acero); font-size: 0.8rem; }
+
+/* --------------------------------------------------------------------------
+   Página de descanso / mantenimiento programado (HTTP 503)
+   Autónoma: no usa cabecera ni nav, para no enlazar rutas bloqueadas.
+   -------------------------------------------------------------------------- */
+.descanso {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+.descanso__caja {
+  position: relative;
+  max-width: 460px;
+  width: 100%;
+  text-align: center;
+  background: #fff;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 48px 32px 32px;
+  box-shadow: 0 1px 0 var(--borde);
+}
+.descanso__cota {
+  font-family: var(--fuente-mono);
+  color: var(--acero);
+  font-size: 0.8rem;
+  margin: 0 0 20px;
+}
+/* Reusa el motivo del sello circular rotado "verificado a mano" */
+.descanso__sello {
+  width: 96px; height: 96px; margin: 0 auto 20px;
+  border-radius: 50%;
+  border: 2px solid var(--verificado); color: var(--verificado);
+  background: var(--papel);
+  display: grid; place-content: center;
+  font-family: var(--fuente-mono); font-size: 0.7rem; line-height: 1.25;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  transform: rotate(-12deg);
+  box-shadow: 0 1px 0 var(--borde);
+}
+.descanso__titulo {
+  font-family: var(--fuente-titular);
+  margin: 0 0 12px;
+}
+.descanso__mensaje {
+  color: var(--tinta);
+  margin: 0 0 28px;
+}
+.descanso__pie {
+  font-family: var(--fuente-mono);
+  color: var(--acero);
+  font-size: 0.78rem;
+  margin: 0;
+}

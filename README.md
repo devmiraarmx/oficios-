@@ -110,6 +110,34 @@ al instante (salta el SMS) y aparece de inmediato en la bandeja del profesional
 que coincide; los pagos siguen simulados. Se muestra una cinta "Modo
 demostración" en todas las páginas. **Déjalo apagado en producción real.**
 
+### Modo descanso / mantenimiento programado
+
+Para poner el sitio "a descansar" a una hora determinada —por ejemplo durante
+una ventana de mantenimiento— define la variable de entorno
+`MODO_DESCANSO_DESDE` con una fecha/hora ISO 8601 **con desfase horario**:
+
+```
+MODO_DESCANSO_DESDE=2026-09-01T00:00:00-06:00   # medianoche en CDMX/Cancún (UTC-6)
+```
+
+A partir de ese instante, el sitio público responde con una página
+**"Volvemos pronto"** (HTTP `503` + `Retry-After`), en vez del sitio normal.
+El `503` le indica a los buscadores que es temporal, así que no castiga el SEO
+como lo haría un `404`. Siguen accesibles:
+
+- el panel `/admin` (para seguir operando durante el descanso),
+- el health check `/salud` (para que Railway no marque el deploy como caído),
+- los archivos estáticos (para que la propia página de descanso cargue su CSS).
+
+Antes de esa hora el sitio funciona con normalidad, así que puedes programarlo
+con anticipación. El descanso es **indefinido**: para reactivar el sitio, borra
+(o vacía) `MODO_DESCANSO_DESDE` y vuelve a desplegar. Puedes personalizar el
+texto con `MODO_DESCANSO_MENSAJE`. Un valor con formato inválido se ignora (el
+sitio sigue en línea), para que un typo nunca tumbe la app.
+
+En Railway esto se define en **Variables** del servicio; el redeploy que Railway
+dispara al cambiar la variable es lo que activa o desactiva el descanso.
+
 ## Estado actual
 
 Construido: esqueleto Flask, modelos de datos, directorio + landing SEO +

@@ -3,7 +3,9 @@
 Crea y configura la app Flask, inicializa extensiones y registra los
 blueprints. Se usa como `create_app()` desde gunicorn/wsgi.
 """
-from flask import Flask
+from datetime import datetime, timezone
+
+from flask import Flask, render_template, request
 
 from app.config import Config
 from app.extensions import db, migrate
@@ -42,6 +44,35 @@ def create_app(config_class: type = Config) -> Flask:
         if len(digitos) == 10:  # número nacional MX sin lada de país
             digitos = "52" + digitos
         return "https://wa.me/" + digitos
+
+    # Modo descanso programado (ver Config.MODO_DESCANSO_DESDE). A partir del
+    # instante configurado, el sitio público responde con una página de
+    # mantenimiento (HTTP 503). Se dejan fuera del bloqueo:
+    #   - el panel de admin (/admin*), para poder seguir operando,
+    #   - el health check (/salud), para que Railway no marque el deploy caído,
+    #   - los archivos estáticos, para que la propia página de descanso cargue
+    #     su CSS/íconos.
+    @app.before_request
+    def _guardia_descanso():
+        desde = app.config.get("MODO_DESCANSO_DESDE")
+        if not desde:
+            return None
+        if datetime.now(timezone.utc) < desde:
+            return None
+
+        ruta = request.path or "/"
+        if ruta.startswith("/admin") or ruta == "/salud":
+            return None
+        if request.endpoint == "static" or ruta.startswith("/static/"):
+            return None
+
+        # Retry-After orientativo (1 h): le dice a bots/clientes que es
+        # temporal. 503 evita el castigo SEO de un 404/410.
+        cuerpo = render_template(
+            "public/descanso.html",
+            mensaje=app.config.get("MODO_DESCANSO_MENSAJE"),
+        )
+        return cuerpo, 503, {"Retry-After": "3600"}
 
     # Chequeo de salud para Railway
     @app.route("/salud")
