@@ -151,6 +151,13 @@ main.contenedor { padding: 32px 0 64px; }
 }
 .ficha__etiqueta { color: var(--acero); text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.72rem; }
 .ficha__valor { font-family: var(--fuente-mono); }
+.sello-derivado {
+  display: inline-block; margin-bottom: 10px;
+  background: #ecf3ee; color: var(--verificado);
+  border: 1px solid var(--verificado); border-radius: 999px;
+  padding: 3px 10px; font-size: 0.72rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
 
 /* Avatar / foto de perfil */
 .avatar {

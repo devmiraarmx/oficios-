@@ -12,8 +12,13 @@ from app.models import (
     Profesional,
     Oficio,
     Zona,
+    Solicitud,
     EstadoProfesional,
     OrigenProfesional,
+)
+from app.servicios import (
+    derivar_lead,
+    profesionales_para_solicitud,
 )
 
 
@@ -30,6 +35,60 @@ def panel():
         .all()
     )
     return render_template("admin/panel.html", pendientes=pendientes, aprobados=aprobados)
+
+
+@bp.route("/solicitudes")
+def solicitudes():
+    """Todas las solicitudes de servicio recibidas (leads), más recientes
+    primero. Desde aquí el equipo puede derivar cada una a un profesional."""
+    todas = Solicitud.query.order_by(Solicitud.creado_en.desc()).all()
+    aprobados = (
+        Profesional.query.filter_by(estado=EstadoProfesional.APROBADO)
+        .order_by(Profesional.nombre).all()
+    )
+    # Por solicitud: profesionales que coinciden (sugerencia) y a quién ya se
+    # derivó (para no repetir y mostrarlo).
+    coincidencias = {s.id: profesionales_para_solicitud(s) for s in todas}
+    ya_derivadas = {
+        s.id: [d.profesional.nombre for d in s.derivaciones] for s in todas
+    }
+    return render_template(
+        "admin/solicitudes.html",
+        solicitudes=todas,
+        aprobados=aprobados,
+        coincidencias=coincidencias,
+        ya_derivadas=ya_derivadas,
+    )
+
+
+@bp.route("/solicitud/<int:solicitud_id>/derivar", methods=["POST"])
+def derivar(solicitud_id):
+    """Deriva una solicitud a un profesional aprobado (asignación manual)."""
+    solicitud = Solicitud.query.get_or_404(solicitud_id)
+    profesional_id = request.form.get("profesional_id")
+    profesional = Profesional.query.filter_by(
+        id=profesional_id, estado=EstadoProfesional.APROBADO
+    ).first()
+    if profesional is None:
+        flash("Selecciona un profesional aprobado para derivar la solicitud.", "error")
+        return redirect(url_for("admin.solicitudes"))
+
+    _derivacion, creada = derivar_lead(profesional, solicitud)
+    if creada:
+        # Aviso push best-effort (si el profesional tiene notificaciones activas).
+        try:
+            from app.notificaciones import notificar_derivacion
+            notificar_derivacion(profesional, solicitud)
+        except Exception:  # nunca romper la derivación por un fallo de push
+            pass
+        flash(
+            f"Solicitud derivada a {profesional.nombre}. La verá en su bandeja "
+            f"de leads sin costo.",
+            "success",
+        )
+    else:
+        flash(f"Esa solicitud ya estaba derivada a {profesional.nombre}.", "success")
+    return redirect(url_for("admin.solicitudes"))
 
 
 @bp.route("/alta-directa", methods=["GET", "POST"])

@@ -22,6 +22,8 @@ from app.servicios import (
     acreditar_compra,
     leads_para,
     ids_desbloqueadas,
+    ids_derivadas,
+    solicitudes_derivadas,
     CreditosInsuficientes,
 )
 
@@ -104,13 +106,24 @@ def alta_recibida():
 @bp.route("/<token>/leads")
 def leads(token):
     profesional = _profesional_por_token(token)
-    leads = leads_para(profesional)
-    desbloqueadas = ids_desbloqueadas(profesional)
+
+    # Leads que coinciden por oficio/zona + los que el equipo le derivó a mano
+    # (estos aparecen aunque no coincidan). Se combinan sin duplicar.
+    por_id = {s.id: s for s in leads_para(profesional)}
+    for s in solicitudes_derivadas(profesional):
+        por_id[s.id] = s
+    leads = sorted(por_id.values(), key=lambda s: s.creado_en, reverse=True)
+
+    derivadas = ids_derivadas(profesional)
+    # El contacto se revela gratis tanto si lo desbloqueó (pagó) como si se lo
+    # derivaron.
+    desbloqueadas = ids_desbloqueadas(profesional) | derivadas
     return render_template(
         "profesionales/leads.html",
         profesional=profesional,
         leads=leads,
         desbloqueadas=desbloqueadas,
+        derivadas=derivadas,
         creditos_por_lead=current_app.config["CREDITOS_POR_LEAD"],
     )
 

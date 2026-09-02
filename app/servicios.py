@@ -7,6 +7,7 @@ atómica, fácil de razonar y de probar.
 from app.extensions import db
 from app.models import (
     Desbloqueo,
+    Derivacion,
     MovimientoCredito,
     Profesional,
     Solicitud,
@@ -88,6 +89,43 @@ def ids_desbloqueadas(profesional) -> set[int]:
     """IDs de solicitudes que el profesional ya desbloqueó (para no volver a
     cobrar y para mostrar el contacto directamente)."""
     return {d.solicitud_id for d in profesional.desbloqueos}
+
+
+def ids_derivadas(profesional) -> set[int]:
+    """IDs de solicitudes que el equipo derivó directamente a este profesional.
+    Se muestran con el contacto revelado sin cobrar crédito."""
+    return {d.solicitud_id for d in profesional.derivaciones}
+
+
+def derivar_lead(profesional, solicitud):
+    """Deriva (asigna a mano) una solicitud a un profesional concreto.
+
+    Idempotente: si ya estaba derivada a ese profesional, no la duplica.
+    Devuelve (derivacion, creada) donde `creada` indica si se creó en esta
+    llamada. No cobra créditos: es una entrega manual del equipo.
+    """
+    existente = Derivacion.query.filter_by(
+        profesional_id=profesional.id, solicitud_id=solicitud.id
+    ).first()
+    if existente:
+        return existente, False
+
+    derivacion = Derivacion(profesional_id=profesional.id, solicitud_id=solicitud.id)
+    db.session.add(derivacion)
+    db.session.commit()
+    return derivacion, True
+
+
+def solicitudes_derivadas(profesional):
+    """Solicitudes derivadas a este profesional (aunque no coincidan por oficio
+    o zona: el equipo las asignó a mano)."""
+    ids = ids_derivadas(profesional)
+    if not ids:
+        return []
+    return (
+        Solicitud.query.filter(Solicitud.id.in_(ids))
+        .order_by(Solicitud.creado_en.desc()).all()
+    )
 
 
 def leads_para(profesional):
