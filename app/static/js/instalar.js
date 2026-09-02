@@ -3,7 +3,9 @@
      "Instalar" dispara el instalador nativo del sistema.
    - iPhone (Safari): iOS no permite instalar por botón; se muestran las
      instrucciones (Compartir → Agregar a inicio).
-   Se oculta si la app ya está instalada o si el usuario ya lo descartó.
+   Se oculta si la app ya está instalada o si el usuario lo cerró.
+   El descarte usa sessionStorage: al cerrar con la ✕ no vuelve a salir
+   durante esa sesión, pero reaparece en la siguiente visita.
 */
 (function () {
   const banner = document.getElementById("instalar-banner");
@@ -17,12 +19,14 @@
     window.matchMedia("(display-mode: standalone)").matches ||
     window.navigator.standalone === true;
 
+  // sessionStorage: el descarte dura solo la sesión actual; en la próxima
+  // visita (nueva sesión) el banner vuelve a ofrecerse.
   function descartado() {
-    try { return localStorage.getItem("instalar-descartado") === "1"; }
+    try { return sessionStorage.getItem("instalar-descartado") === "1"; }
     catch (e) { return false; }
   }
   function marcarDescartado() {
-    try { localStorage.setItem("instalar-descartado", "1"); } catch (e) {}
+    try { sessionStorage.setItem("instalar-descartado", "1"); } catch (e) {}
   }
 
   if (yaInstalada || descartado()) return;
