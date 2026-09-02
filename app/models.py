@@ -48,6 +48,11 @@ class Urgencia(str, Enum):
     SIN_PRISA = "sin_prisa"
 
 
+class CategoriaOficio(str, Enum):
+    OFICIO = "oficio"              # plomero, electricista, albañil...
+    ESPECIALISTA = "especialista"  # arquitecto, ingeniero, topógrafo...
+
+
 # --------------------------------------------------------------------------
 # Tablas de asociación (un profesional cubre varios oficios y varias zonas)
 # --------------------------------------------------------------------------
@@ -76,6 +81,13 @@ class Oficio(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(80), nullable=False, unique=True)
     slug = db.Column(db.String(80), nullable=False, unique=True, index=True)
+    # Agrupa el catálogo en secciones: "oficio" (plomero, albañil...) o
+    # "especialista" (arquitecto, ingeniero...). Ver CategoriaOficio.
+    categoria = db.Column(
+        db.String(20), nullable=False,
+        default=CategoriaOficio.OFICIO.value,
+        server_default=CategoriaOficio.OFICIO.value,
+    )
 
     def __repr__(self) -> str:
         return f"<Oficio {self.slug}>"

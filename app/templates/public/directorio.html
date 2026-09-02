@@ -9,9 +9,18 @@
     <label for="oficio">Oficio</label>
     <select name="oficio" id="oficio">
       <option value="">Todos</option>
-      {% for o in oficios %}
-        <option value="{{ o.slug }}" {{ 'selected' if o.slug == oficio_sel }}>{{ o.nombre }}</option>
-      {% endfor %}
+      <optgroup label="Oficios">
+        {% for o in oficios %}
+          <option value="{{ o.slug }}" {{ 'selected' if o.slug == oficio_sel }}>{{ o.nombre }}</option>
+        {% endfor %}
+      </optgroup>
+      {% if especialistas %}
+      <optgroup label="Especialistas">
+        {% for o in especialistas %}
+          <option value="{{ o.slug }}" {{ 'selected' if o.slug == oficio_sel }}>{{ o.nombre }}</option>
+        {% endfor %}
+      </optgroup>
+      {% endif %}
     </select>
   </div>
   <div class="campo" style="margin:0">
