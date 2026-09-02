@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block titulo %}Panel — solicitudes recibidas{% endblock %}
+
+{% set etiquetas_urgencia = {'hoy':'Hoy', 'esta_semana':'Esta semana', 'sin_prisa':'Sin prisa'} %}
+
+{% block contenido %}
+<div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+  <h1 style="margin:0">Solicitudes recibidas</h1>
+  <a class="boton boton--fantasma" href="{{ url_for('admin.panel') }}">← Altas de profesionales</a>
+</div>
+<p class="hero__cota">{{ solicitudes | length }} solicitud(es) en total. Puedes derivar cada una a un profesional.</p>
+
+{% if solicitudes %}
+<table class="tabla">
+  <thead>
+    <tr>
+      <th>Recibido</th>
+      <th>Oficio · Zona</th>
+      <th>Urgencia</th>
+      <th>Descripción</th>
+      <th>Cliente</th>
+      <th>Estado</th>
+      <th>Derivar a</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in solicitudes %}
+    <tr>
+      <td class="dato">{{ s.creado_en.strftime('%d/%m/%Y %H:%M') }}</td>
+      <td>
+        <strong>{{ s.oficio }}</strong><br>
+        <span class="dato">{{ s.zona }}</span>
+      </td>
+      <td class="dato">{{ etiquetas_urgencia.get(s.urgencia.value, '—') if s.urgencia else '—' }}</td>
+      <td style="max-width:280px">{{ s.descripcion }}</td>
+      <td>
+        {{ s.nombre_cliente or '—' }}<br>
+        <span class="dato">{{ s.telefono_cliente }}</span>
+      </td>
+      <td class="dato">
+        {% if s.telefono_verificado %}
+          <span style="color:var(--verificado)">✓ verificado</span>
+        {% else %}
+          <span style="color:var(--acento)">sin verificar</span>
+        {% endif %}
+        {% if coincidencias[s.id] %}
+          <br>{{ coincidencias[s.id] | length }} coinciden
+        {% endif %}
+      </td>
+      <td>
+        {% if ya_derivadas[s.id] %}
+          <div class="hero__cota" style="margin-bottom:6px">
+            Derivada a: {{ ya_derivadas[s.id] | join(', ') }}
+          </div>
+        {% endif %}
+        {% if aprobados %}
+        <form method="post"
+              action="{{ url_for('admin.derivar', solicitud_id=s.id) }}"
+              class="acciones-fila" style="gap:6px; align-items:center;">
+          <select name="profesional_id" required style="max-width:180px">
+            <option value="">Elegir profesional…</option>
+            {% for p in aprobados %}
+              <option value="{{ p.id }}">{{ p.nombre }}{% if p.oficios %} · {{ p.oficios | map(attribute='nombre') | join(', ') }}{% endif %}</option>
+            {% endfor %}
+          </select>
+          <button class="boton" type="submit">Derivar</button>
+        </form>
+        {% else %}
+          <span class="dato">No hay profesionales aprobados.</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>Aún no hay solicitudes recibidas.</p>
+{% endif %}
+{% endblock %}

@@ -80,6 +80,21 @@ def notificar_nuevo_lead(solicitud) -> int:
     return enviados
 
 
+def notificar_derivacion(profesional, solicitud) -> int:
+    """Avisa a un profesional que el equipo le derivó un lead directamente.
+    Devuelve cuántos envíos se realizaron con éxito (0 si push sin configurar)."""
+    payload = {
+        "titulo": f"Te derivamos un lead: {solicitud.oficio} en {solicitud.zona}",
+        "cuerpo": (solicitud.descripcion or "")[:120],
+        "url": f"/profesionales/{profesional.token_acceso}/leads",
+    }
+    enviados = 0
+    for suscripcion in profesional.suscripciones_push:
+        if enviar_push(suscripcion, payload):
+            enviados += 1
+    return enviados
+
+
 # --------------------------------------------------------------------------
 # Generación de llaves VAPID (base64url de una línea, aptas para .env)
 # --------------------------------------------------------------------------

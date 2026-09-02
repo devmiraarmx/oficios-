@@ -26,6 +26,9 @@
   <div class="rejilla-fichas">
     {% for solicitud in leads %}
       <article class="ficha">
+        {% if solicitud.id in derivadas %}
+          <div class="sello-derivado">✓ Derivado por el equipo · sin costo</div>
+        {% endif %}
         <div class="ficha__renglon">
           <span class="ficha__etiqueta">Oficio</span>
           <span class="ficha__valor">{{ solicitud.oficio }}</span>

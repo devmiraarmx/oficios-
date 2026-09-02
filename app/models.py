@@ -148,6 +148,7 @@ class Profesional(db.Model):
     oficios = db.relationship("Oficio", secondary=profesional_oficios, backref="profesionales")
     zonas = db.relationship("Zona", secondary=profesional_zonas, backref="profesionales")
     desbloqueos = db.relationship("Desbloqueo", back_populates="profesional")
+    derivaciones = db.relationship("Derivacion", back_populates="profesional")
     movimientos = db.relationship("MovimientoCredito", back_populates="profesional")
     resenas = db.relationship("Resena", back_populates="profesional")
     suscripciones_push = db.relationship(
@@ -186,6 +187,7 @@ class Solicitud(db.Model):
     creado_en = db.Column(db.DateTime, default=datetime.utcnow, nullable=False, index=True)
 
     desbloqueos = db.relationship("Desbloqueo", back_populates="solicitud")
+    derivaciones = db.relationship("Derivacion", back_populates="solicitud")
 
     def __repr__(self) -> str:
         return f"<Solicitud {self.id} {self.oficio}@{self.zona}>"
@@ -212,6 +214,33 @@ class Desbloqueo(db.Model):
 
     def __repr__(self) -> str:
         return f"<Desbloqueo prof={self.profesional_id} sol={self.solicitud_id}>"
+
+
+class Derivacion(db.Model):
+    """Derivación manual: un socio/admin asigna directamente una solicitud a un
+    profesional específico (típicamente de su red de contactos). El profesional
+    ve el lead en su bandeja con el contacto revelado sin gastar créditos.
+
+    Es distinta del Desbloqueo (que sí cobra un crédito): aquí el equipo entrega
+    el lead a mano, no lo compra el profesional.
+    """
+    __tablename__ = "derivaciones"
+
+    id = db.Column(db.Integer, primary_key=True)
+    profesional_id = db.Column(db.ForeignKey("profesionales.id"), nullable=False, index=True)
+    solicitud_id = db.Column(db.ForeignKey("solicitudes.id"), nullable=False, index=True)
+    creado_en = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    profesional = db.relationship("Profesional", back_populates="derivaciones")
+    solicitud = db.relationship("Solicitud", back_populates="derivaciones")
+
+    __table_args__ = (
+        # No derivar dos veces la misma solicitud al mismo profesional.
+        db.UniqueConstraint("profesional_id", "solicitud_id", name="uq_derivacion_prof_sol"),
+    )
+
+    def __repr__(self) -> str:
+        return f"<Derivacion prof={self.profesional_id} sol={self.solicitud_id}>"
 
 
 class MovimientoCredito(db.Model):
