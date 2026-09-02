@@ -35,4 +35,15 @@
   </div>
 </section>
 {% endif %}
+
+{% if especialistas %}
+<section>
+  <h2 style="margin-top:40px">Especialistas</h2>
+  <div class="opciones">
+    {% for esp in especialistas %}
+      <a class="boton boton--fantasma" href="{{ url_for('public.directorio', oficio=esp.slug) }}">{{ esp.nombre }}</a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
 {% endblock %}

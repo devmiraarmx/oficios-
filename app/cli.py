@@ -16,6 +16,7 @@ from app.models import (
     Solicitud,
     Urgencia,
     EstadoProfesional,
+    CategoriaOficio,
 )
 
 OFICIOS = [
@@ -25,6 +26,15 @@ OFICIOS = [
     ("Carpintero", "carpintero"),
     ("Pintor", "pintor"),
     ("Cerrajero", "cerrajero"),
+]
+
+ESPECIALISTAS = [
+    ("Arquitecto", "arquitecto"),
+    ("Ingeniero Civil", "ingeniero-civil"),
+    ("Ingeniero Eléctrico", "ingeniero-electrico"),
+    ("Topógrafo", "topografo"),
+    ("Diseñador de Interiores", "disenador-interiores"),
+    ("Perito / DRO", "perito-dro"),
 ]
 
 ZONAS = [
@@ -44,7 +54,17 @@ def registrar_comandos(app: Flask) -> None:
 
         for nombre, slug in OFICIOS:
             if not Oficio.query.filter_by(slug=slug).first():
-                db.session.add(Oficio(nombre=nombre, slug=slug))
+                db.session.add(Oficio(
+                    nombre=nombre, slug=slug,
+                    categoria=CategoriaOficio.OFICIO.value,
+                ))
+
+        for nombre, slug in ESPECIALISTAS:
+            if not Oficio.query.filter_by(slug=slug).first():
+                db.session.add(Oficio(
+                    nombre=nombre, slug=slug,
+                    categoria=CategoriaOficio.ESPECIALISTA.value,
+                ))
 
         for nombre, slug, ciudad in ZONAS:
             if not Zona.query.filter_by(slug=slug).first():

@@ -16,13 +16,23 @@ from app.models import (
     Solicitud,
     Urgencia,
     EstadoProfesional,
+    CategoriaOficio,
 )
 
 
 @bp.route("/")
 def inicio():
-    oficios = Oficio.query.order_by(Oficio.nombre).all()
-    return render_template("public/inicio.html", oficios=oficios)
+    oficios = (
+        Oficio.query.filter_by(categoria=CategoriaOficio.OFICIO.value)
+        .order_by(Oficio.nombre).all()
+    )
+    especialistas = (
+        Oficio.query.filter_by(categoria=CategoriaOficio.ESPECIALISTA.value)
+        .order_by(Oficio.nombre).all()
+    )
+    return render_template(
+        "public/inicio.html", oficios=oficios, especialistas=especialistas
+    )
 
 
 @bp.route("/oficio/<oficio_slug>/<zona_slug>")
@@ -63,7 +73,11 @@ def directorio():
     return render_template(
         "public/directorio.html",
         profesionales=profesionales,
-        oficios=Oficio.query.order_by(Oficio.nombre).all(),
+        oficios=Oficio.query.filter_by(categoria=CategoriaOficio.OFICIO.value)
+        .order_by(Oficio.nombre).all(),
+        especialistas=Oficio.query.filter_by(
+            categoria=CategoriaOficio.ESPECIALISTA.value
+        ).order_by(Oficio.nombre).all(),
         zonas=Zona.query.order_by(Zona.nombre).all(),
         oficio_sel=oficio_slug,
         zona_sel=zona_slug,
