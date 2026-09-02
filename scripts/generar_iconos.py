@@ -2,10 +2,13 @@
 """Genera todos los iconos de la PWA y los favicons a partir de un solo original.
 
 Uso:
-    python scripts/generar_iconos.py app/static/img/origen/logo.png
+    python scripts/generar_iconos.py [ruta_al_original] [--quitar-blanco]
 
 También detecta automáticamente el original si lo dejas en
 `app/static/img/origen/` con nombre `logo.png`, `logo.jpg` o `logo.webp`.
+
+Opción --quitar-blanco: convierte el fondo blanco en transparente (útil
+cuando el original es un JPEG con fondo blanco sólido).
 
 Recomendado: original cuadrado de al menos 1024x1024 px, con fondo transparente
 (PNG). Si además dejas un `logo.svg` en la misma carpeta, se copia como favicon
@@ -55,6 +58,34 @@ def encontrar_original(arg: str | None) -> Path:
     )
 
 
+def quitar_fondo_blanco(img: Image.Image, lo: int = 230, hi: int = 250) -> Image.Image:
+    """Vuelve transparente el fondo blanco de un logo.
+
+    Un pixel se considera fondo cuando su canal más bajo (min de R,G,B) es muy
+    alto, es decir es blanco/gris claro. Los colores saturados del logo (azul
+    marino, azul claro) tienen un canal bajo y se conservan opacos. Entre `lo`
+    y `hi` se aplica una rampa para suavizar los bordes (antialias).
+    """
+    img = img.convert("RGBA")
+    pixels = img.load()
+    ancho, alto = img.size
+    for y in range(alto):
+        for x in range(ancho):
+            r, g, b, a = pixels[x, y]
+            if a == 0:
+                continue
+            m = min(r, g, b)
+            if m >= hi:
+                nueva_a = 0
+            elif m <= lo:
+                nueva_a = a
+            else:
+                nueva_a = int(a * (hi - m) / (hi - lo))
+            if nueva_a != a:
+                pixels[x, y] = (r, g, b, nueva_a)
+    return img
+
+
 def cargar_cuadrado(ruta: Path) -> Image.Image:
     """Abre el original y lo deja cuadrado (RGBA) sin deformarlo."""
     img = Image.open(ruta).convert("RGBA")
@@ -101,10 +132,15 @@ def generar_apple(img: Image.Image, lado: int = 180) -> Image.Image:
 
 
 def main() -> None:
-    arg = sys.argv[1] if len(sys.argv) > 1 else None
-    original = encontrar_original(arg)
+    args = [a for a in sys.argv[1:]]
+    quitar_blanco = "--quitar-blanco" in args
+    rutas = [a for a in args if not a.startswith("--")]
+    original = encontrar_original(rutas[0] if rutas else None)
     print(f"Original: {original.relative_to(RAIZ)}")
     img = cargar_cuadrado(original)
+    if quitar_blanco:
+        print("  · Quitando fondo blanco (transparente)")
+        img = quitar_fondo_blanco(img)
     if img.size[0] < 512:
         print(
             f"  ⚠ El original mide {img.size[0]}px; se recomienda >=1024px "
