@@ -1,0 +1,225 @@
+{# Página ancla de CIMANT: capta solicitudes por WhatsApp; la asignación del
+   especialista se hace manualmente. Es independiente de base.html porque usa
+   la identidad de marca CIMANT, no la del directorio. #}
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CIMANT · Construcción, Ingeniería y Mantenimiento en CDMX</title>
+  <meta name="description" content="Obra, ingeniería y mantenimiento en la CDMX con especialistas verificados por llamada real. Pide tu servicio por WhatsApp.">
+  {% if borrador %}<meta name="robots" content="noindex, nofollow">{% endif %}
+  <meta name="theme-color" content="#14181F">
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/cimant.css') }}">
+</head>
+<body data-whatsapp="{{ whatsapp }}">
+{% if borrador %}
+<div class="borrador" role="note">
+  <div class="contenedor">
+    <span>BORRADOR PARA REVISIÓN DE SOCIOS · no es la página publicada</span>
+    <span>Pendiente: {% if not whatsapp %}número de WhatsApp real, {% endif %}fotos y testimonios</span>
+  </div>
+</div>
+{% endif %}
+
+<header class="header oscuro">
+  <div class="contenedor">
+    <a href="#inicio" class="marca">
+      <div class="marca__c">C</div>
+      <div>
+        <span class="marca__nombre">CIMANT</span>
+        <span class="marca__sub">CONSTRUCCIÓN · INGENIERÍA · MANTENIMIENTO</span>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Principal">
+      <a href="#servicios">Servicios</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#zonas">Zonas</a>
+      <a href="#especialistas">Soy especialista</a>
+      <a href="#pedir" class="cta">Pedir servicio</a>
+    </nav>
+  </div>
+</header>
+
+<section id="inicio" class="hero oscuro">
+  <div class="contenedor">
+    <div class="hero__texto">
+      <span class="eyebrow">CIUDAD DE MÉXICO · ATENCIÓN POR WHATSAPP</span>
+      <h1>Obra, ingeniería y mantenimiento con especialistas que sí verificamos.</h1>
+      <p>Cuéntanos qué necesitas, mándanos fotos por WhatsApp y te enviamos al especialista adecuado. A cada uno lo conocimos con una llamada real antes de aprobarlo.</p>
+      <div class="hero__sello-fila">
+        <div class="sello">VERIFICADO<br>POR LLAMADA<br>REAL</div>
+        <div class="ventajas">
+          <span>— Sin descargar ninguna app</span>
+          <span>— Te asignamos al especialista por ti</span>
+          <span>— Cotización con tabulador de precios 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <form id="pedir" class="pedir" onsubmit="return false">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span class="eyebrow">PASO 1 DE 2</span>
+        <h2>¿Qué necesitas?</h2>
+      </div>
+      <div class="campo">
+        <label for="servicio">Tipo de servicio</label>
+        <select id="servicio">
+          <option value="">Elige un servicio</option>
+          <option>Construcción</option>
+          <option>Ingeniería</option>
+          <option>Mantenimiento</option>
+          <option>Plomería</option>
+          <option>Electricidad</option>
+          <option>Albañilería</option>
+          <option>Sistemas contra incendios</option>
+          <option>Pintura y acabados</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="alcaldia">Alcaldía</label>
+        <select id="alcaldia">
+          <option value="">Elige tu alcaldía</option>
+          <option>Gustavo A. Madero</option>
+          <option>Venustiano Carranza</option>
+          <option>Iztapalapa</option>
+          <option>Otra alcaldía de CDMX</option>
+        </select>
+      </div>
+      <div class="campo">
+        <span class="etiqueta" id="cuando-eti">¿Para cuándo?</span>
+        <div class="toggle" role="group" aria-labelledby="cuando-eti">
+          <button type="button" id="btn-programado" data-urgencia="Programado" aria-pressed="true">Programado</button>
+          <button type="button" id="btn-urgente" data-urgencia="Lo antes posible" aria-pressed="false">Lo antes posible</button>
+        </div>
+      </div>
+      <a id="wa-pedido" class="boton-wa" href="#" target="_blank" rel="noopener">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"></path></svg>
+        Continuar en WhatsApp
+      </a>
+      <p class="nota">Paso 2: en el chat nos mandas fotos del trabajo y te respondemos con la cotización. Al continuar aceptas nuestro <a href="#aviso">aviso de privacidad</a>.</p>
+    </form>
+  </div>
+</section>
+
+<section id="servicios" class="contenedor servicios">
+  <div class="cabeza-seccion">
+    <span class="eyebrow">SERVICIOS</span>
+    <h2 class="titulo-seccion">De una fuga a una obra completa.</h2>
+  </div>
+  <div class="rejilla-servicios">
+    <div class="servicio"><span class="codigo">01</span><h3>Construcción</h3><p>Obra nueva, ampliaciones, bardas, losas y remodelaciones.</p></div>
+    <div class="servicio"><span class="codigo">02</span><h3>Ingeniería</h3><p>Proyectos, cálculo y supervisión de obra.</p></div>
+    <div class="servicio"><span class="codigo">03</span><h3>Mantenimiento</h3><p>Preventivo y correctivo para casa, local u oficina.</p></div>
+    <div class="servicio"><span class="codigo">04</span><h3>Plomería</h3><p>Fugas, instalaciones, calentadores y drenaje.</p></div>
+    <div class="servicio"><span class="codigo">05</span><h3>Electricidad</h3><p>Instalaciones, contactos, centros de carga y cortos.</p></div>
+    <div class="servicio"><span class="codigo">06</span><h3>Albañilería</h3><p>Muros, aplanados, pisos y reparaciones.</p></div>
+    <div class="servicio"><span class="codigo">07</span><h3>Sistemas contra incendios</h3><p>Instalación y mantenimiento de redes y equipos.</p></div>
+    <div class="servicio"><span class="codigo">08</span><h3>Pintura y acabados</h3><p>Interiores, exteriores e impermeabilización.</p></div>
+  </div>
+</section>
+
+<section id="como-funciona" class="contenedor como">
+  <div class="cabeza-seccion">
+    <span class="eyebrow">CÓMO FUNCIONA</span>
+    <h2 class="titulo-seccion">Tres pasos, una sola conversación.</h2>
+  </div>
+  <div class="pasos">
+    <div class="paso"><span class="num">01</span><h3>Cuéntanos y manda fotos</h3><p>Elige el servicio y tu alcaldía, y en WhatsApp nos mandas fotos de lo que hay que hacer.</p></div>
+    <div class="paso"><span class="num">02</span><h3>Recibe tu cotización</h3><p>Cotizamos con nuestro tabulador de precios por tipo de trabajo, zona y urgencia.</p></div>
+    <div class="paso"><span class="num">03</span><h3>Te enviamos al especialista</h3><p>Nosotros elegimos a la persona adecuada de nuestro directorio verificado y coordinamos la visita.</p></div>
+  </div>
+</section>
+
+<section class="contenedor verifica-wrap">
+  <div class="verifica">
+    <div class="sello-grande">REVISADO<br>A MANO<br>POR CIMANT</div>
+    <div class="verifica__texto">
+      <h2>Verificados por una persona, no por un algoritmo.</h2>
+      <p>Antes de entrar a nuestro directorio, cada especialista pasa por una llamada con nuestro equipo: platicamos de su experiencia, su oficio y su zona de trabajo. Si no lo conocemos, no lo mandamos a tu casa.</p>
+    </div>
+  </div>
+</section>
+
+<section id="testimonios" class="contenedor testimonios">
+  <div class="cabeza-seccion">
+    <span class="eyebrow">CLIENTES SATISFECHOS</span>
+    <h2 class="titulo-seccion">Trabajos terminados, contados por quien los pidió.</h2>
+  </div>
+  <div class="rejilla-testimonios">
+    <div class="testimonio"><div class="fotos"><div class="foto foto--antes">ANTES · [FOTO]</div><div class="foto foto--despues">DESPUÉS · [FOTO]</div></div><div class="testimonio__cuerpo"><span class="testimonio__meta">[SERVICIO] · [ALCALDÍA]</span><p class="testimonio__texto">"[Lo que dijo el cliente, en sus palabras]"</p><span class="testimonio__nombre">[Nombre e inicial del apellido]</span></div></div>
+    <div class="testimonio"><div class="fotos"><div class="foto foto--antes">ANTES · [FOTO]</div><div class="foto foto--despues">DESPUÉS · [FOTO]</div></div><div class="testimonio__cuerpo"><span class="testimonio__meta">[SERVICIO] · [ALCALDÍA]</span><p class="testimonio__texto">"[Lo que dijo el cliente, en sus palabras]"</p><span class="testimonio__nombre">[Nombre e inicial del apellido]</span></div></div>
+    <div class="testimonio"><div class="fotos"><div class="foto foto--antes">ANTES · [FOTO]</div><div class="foto foto--despues">DESPUÉS · [FOTO]</div></div><div class="testimonio__cuerpo"><span class="testimonio__meta">[SERVICIO] · [ALCALDÍA]</span><p class="testimonio__texto">"[Lo que dijo el cliente, en sus palabras]"</p><span class="testimonio__nombre">[Nombre e inicial del apellido]</span></div></div>
+  </div>
+</section>
+
+<section id="zonas" class="contenedor zonas">
+  <div class="cabeza-seccion">
+    <span class="eyebrow">COBERTURA</span>
+    <h2 class="titulo-seccion">Arrancamos en el oriente y norte de la CDMX.</h2>
+  </div>
+  <div class="rejilla-zonas">
+    <div class="zona zona--arranque"><span class="zona__eti">ZONA DE ARRANQUE</span><span class="zona__nombre">Gustavo A. Madero</span></div>
+    <div class="zona zona--arranque"><span class="zona__eti">ZONA DE ARRANQUE</span><span class="zona__nombre">Venustiano Carranza</span></div>
+    <div class="zona zona--arranque"><span class="zona__eti">ZONA DE ARRANQUE</span><span class="zona__nombre">Iztapalapa</span></div>
+    <div class="zona zona--resto"><span class="zona__eti">TAMBIÉN ATENDEMOS</span><span class="zona__nombre">Resto de la CDMX</span></div>
+  </div>
+</section>
+
+<section id="especialistas" class="especialistas oscuro">
+  <div class="contenedor">
+    <div class="cabeza-seccion">
+      <span class="eyebrow">TRABAJA CON NOSOTROS</span>
+      <h2 class="titulo-seccion">Súmate a nuestro directorio.</h2>
+    </div>
+    <div class="rejilla-alta">
+      <div class="alta">
+        <h3>Especialistas</h3>
+        <p>Plomeros, electricistas, albañiles, pintores, técnicos e ingenieros. Regístrate y te llamamos para conocerte y verificar tu experiencia.</p>
+        <a id="wa-especialista" class="amarillo" href="#" target="_blank" rel="noopener">Quiero registrarme</a>
+      </div>
+      <div class="alta">
+        <h3>Arquitectos y contratistas</h3>
+        <p>¿Tienes plantilla de trabajadores? Ofrécela a través de CIMANT y recibe trabajos en tu zona.</p>
+        <a id="wa-contratista" class="blanco" href="#" target="_blank" rel="noopener">Ofrecer mi plantilla</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faq">
+  <div class="cabeza-seccion">
+    <span class="eyebrow">PREGUNTAS FRECUENTES</span>
+    <h2 class="titulo-seccion">Lo que más nos preguntan.</h2>
+  </div>
+  <div class="faq__lista">
+    <div class="faq__item"><h3>¿Cuánto cuesta?</h3><p>Depende del trabajo. Cotizamos con nuestro tabulador de precios 2026 según el tipo de trabajo, tu zona y si es urgente. Con las fotos te damos una cotización más precisa.</p></div>
+    <div class="faq__item"><h3>¿Quién elige al especialista?</h3><p>Nosotros. Asignamos a la persona de nuestro directorio que mejor encaja con tu trabajo, tu alcaldía y su disponibilidad.</p></div>
+    <div class="faq__item"><h3>¿Qué significa que esté verificado?</h3><p>Que antes de aprobarlo hablamos con él por teléfono y revisamos su experiencia en el oficio.</p></div>
+    <div class="faq__item"><h3>¿Atienden urgencias?</h3><p>Sí. Marca "Lo antes posible" al pedir tu servicio y te confirmamos disponibilidad por WhatsApp.</p></div>
+  </div>
+</section>
+
+<footer id="aviso" class="pie oscuro">
+  <div class="contenedor">
+    <div class="pie__marca">
+      <span>CIMANT</span>
+      <span>Construcción, Ingeniería y Servicios de Mantenimiento · Ciudad de México</span>
+    </div>
+    <nav aria-label="Pie de página">
+      <a href="#aviso">Aviso de privacidad</a>
+      <a href="#aviso">Términos y condiciones</a>
+      <a id="wa-pie" href="#" target="_blank" rel="noopener">WhatsApp</a>
+      <span>© 2026 CIMANT</span>
+    </nav>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/ancla.js') }}"></script>
+</body>
+</html>
