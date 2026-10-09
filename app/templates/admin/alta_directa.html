@@ -27,11 +27,7 @@
 
   <div class="campo">
     <label>Oficios</label>
-    <div class="opciones">
-      {% for o in oficios %}
-        <label><input type="checkbox" name="oficios" value="{{ o.id }}"> {{ o.nombre }}</label>
-      {% endfor %}
-    </div>
+    {% include "_casillas_oficios.html" %}
   </div>
 
   <div class="campo">

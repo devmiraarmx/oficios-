@@ -19,13 +19,30 @@ from app.models import (
     CategoriaOficio,
 )
 
+# (nombre, slug, sección) — ver SECCIONES_OFICIO en app/models.py
 OFICIOS = [
-    ("Plomero", "plomero"),
-    ("Electricista", "electricista"),
-    ("Albañil", "albanil"),
-    ("Carpintero", "carpintero"),
-    ("Pintor", "pintor"),
-    ("Cerrajero", "cerrajero"),
+    # Obra negra y estructura
+    ("Albañil", "albanil", "obra_negra"),
+    ("Bloquero", "bloquero", "obra_negra"),
+    ("Fierrero", "fierrero", "obra_negra"),
+    ("Cimbrador", "cimbrador", "obra_negra"),
+    ("Colador", "colador", "obra_negra"),
+    # Acabados
+    ("Yesero", "yesero", "acabados"),
+    ("Pastero", "pastero", "acabados"),
+    ("Estuquero", "estuquero", "acabados"),
+    ("Tablaroquero", "tablaroquero", "acabados"),
+    ("Colocador de Pisos y Azulejos", "colocador-pisos-azulejos", "acabados"),
+    ("Pintor", "pintor", "acabados"),
+    # Instalaciones
+    ("Plomero", "plomero", "instalaciones"),
+    ("Electricista", "electricista", "instalaciones"),
+    ("Instalador de Sistemas contra Incendios", "sistemas-contra-incendios", "instalaciones"),
+    # Carpintería, herrería y cerrajería
+    ("Carpintero", "carpintero", "carpinteria_herreria"),
+    ("Carpintero de Obra", "carpintero-de-obra", "carpinteria_herreria"),
+    ("Herrero", "herrero", "carpinteria_herreria"),
+    ("Cerrajero", "cerrajero", "carpinteria_herreria"),
 ]
 
 ESPECIALISTAS = [
@@ -52,10 +69,10 @@ def registrar_comandos(app: Flask) -> None:
         """Crea las tablas y siembra catálogos y un profesional de demostración."""
         db.create_all()
 
-        for nombre, slug in OFICIOS:
+        for nombre, slug, seccion in OFICIOS:
             if not Oficio.query.filter_by(slug=slug).first():
                 db.session.add(Oficio(
-                    nombre=nombre, slug=slug,
+                    nombre=nombre, slug=slug, seccion=seccion,
                     categoria=CategoriaOficio.OFICIO.value,
                 ))
 

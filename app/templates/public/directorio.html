@@ -9,18 +9,13 @@
     <label for="oficio">Oficio</label>
     <select name="oficio" id="oficio">
       <option value="">Todos</option>
-      <optgroup label="Oficios">
-        {% for o in oficios %}
+      {% for grupo in catalogo_por_seccion() %}
+      <optgroup label="{{ grupo.titulo }}">
+        {% for o in grupo.oficios %}
           <option value="{{ o.slug }}" {{ 'selected' if o.slug == oficio_sel }}>{{ o.nombre }}</option>
         {% endfor %}
       </optgroup>
-      {% if especialistas %}
-      <optgroup label="Especialistas">
-        {% for o in especialistas %}
-          <option value="{{ o.slug }}" {{ 'selected' if o.slug == oficio_sel }}>{{ o.nombre }}</option>
-        {% endfor %}
-      </optgroup>
-      {% endif %}
+      {% endfor %}
     </select>
   </div>
   <div class="campo" style="margin:0">

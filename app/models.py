@@ -53,6 +53,27 @@ class CategoriaOficio(str, Enum):
     ESPECIALISTA = "especialista"  # arquitecto, ingeniero, topógrafo...
 
 
+# Secciones en que se agrupan los oficios para mostrarlos (inicio, directorio,
+# registro, admin). El orden de esta lista es el orden en pantalla. Los
+# especialistas se agrupan por `categoria`, no por sección. Un oficio con
+# `seccion` vacía o desconocida cae en "Otros oficios" para no perderse.
+SECCIONES_OFICIO = [
+    ("obra_negra", "Obra negra y estructura",
+     "Muros, block, cimbra, armado de acero y colados."),
+    ("acabados", "Acabados",
+     "Yeso, pasta, estuco, tablaroca, pisos, azulejo y pintura."),
+    ("instalaciones", "Instalaciones",
+     "Agua, drenaje, electricidad y sistemas contra incendios."),
+    ("carpinteria_herreria", "Carpintería, herrería y cerrajería",
+     "Puertas, ventanas, protecciones, muebles y chapas."),
+]
+SECCION_OTROS = ("otros", "Otros oficios", "")
+SECCION_ESPECIALISTAS = (
+    "especialistas", "Especialistas",
+    "Proyecto, cálculo, permisos y supervisión de obra.",
+)
+
+
 # --------------------------------------------------------------------------
 # Tablas de asociación (un profesional cubre varios oficios y varias zonas)
 # --------------------------------------------------------------------------
@@ -88,9 +109,45 @@ class Oficio(db.Model):
         default=CategoriaOficio.OFICIO.value,
         server_default=CategoriaOficio.OFICIO.value,
     )
+    # Sección para agrupar en pantalla (ver SECCIONES_OFICIO). Solo aplica a
+    # categoria = "oficio"; en especialistas se deja vacía.
+    seccion = db.Column(db.String(30), nullable=True)
 
     def __repr__(self) -> str:
         return f"<Oficio {self.slug}>"
+
+    @staticmethod
+    def catalogo_por_seccion(incluir_especialistas: bool = True):
+        """Catálogo agrupado y ordenado para las plantillas.
+
+        Devuelve una lista de dicts {clave, titulo, descripcion, oficios},
+        en el orden de SECCIONES_OFICIO, luego "Otros oficios" (si hay) y al
+        final Especialistas. Omite secciones vacías.
+        """
+        todos = Oficio.query.order_by(Oficio.nombre).all()
+        claves_validas = {clave for clave, _t, _d in SECCIONES_OFICIO}
+
+        grupos = {clave: [] for clave, _t, _d in SECCIONES_OFICIO}
+        otros, especialistas = [], []
+        for o in todos:
+            if o.categoria == CategoriaOficio.ESPECIALISTA.value:
+                especialistas.append(o)
+            elif o.seccion in claves_validas:
+                grupos[o.seccion].append(o)
+            else:
+                otros.append(o)
+
+        def _grupo(definicion, oficios):
+            clave, titulo, descripcion = definicion
+            return {"clave": clave, "titulo": titulo,
+                    "descripcion": descripcion, "oficios": oficios}
+
+        resultado = [_grupo(d, grupos[d[0]]) for d in SECCIONES_OFICIO if grupos[d[0]]]
+        if otros:
+            resultado.append(_grupo(SECCION_OTROS, otros))
+        if incluir_especialistas and especialistas:
+            resultado.append(_grupo(SECCION_ESPECIALISTAS, especialistas))
+        return resultado
 
 
 class Zona(db.Model):
