@@ -26,6 +26,19 @@ OFICIOS = [
     ("Carpintero", "carpintero"),
     ("Pintor", "pintor"),
     ("Cerrajero", "cerrajero"),
+    # Oficios de obra (ver migración a9e4b2c6d8f1)
+    ("Herrero", "herrero"),
+    ("Yesero", "yesero"),
+    ("Colocador de Pisos y Azulejos", "colocador-pisos-azulejos"),
+    ("Pastero", "pastero"),
+    ("Estuquero", "estuquero"),
+    ("Bloquero", "bloquero"),
+    ("Tablaroquero", "tablaroquero"),
+    ("Instalador de Sistemas contra Incendios", "sistemas-contra-incendios"),
+    ("Carpintero de Obra", "carpintero-de-obra"),
+    ("Fierrero", "fierrero"),
+    ("Colador", "colador"),
+    ("Cimbrador", "cimbrador"),
 ]
 
 ESPECIALISTAS = [
