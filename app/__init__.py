@@ -68,6 +68,10 @@ def create_app(config_class: type = Config) -> Flask:
         ruta = request.path or "/"
         if ruta.startswith("/admin") or ruta == "/salud":
             return None
+        # La página ancla CIMANT sigue visible para que los socios la revisen
+        # (y capte solicitudes por WhatsApp) aunque el directorio descanse.
+        if ruta.rstrip("/") == "/cimant":
+            return None
         if request.endpoint == "static" or ruta.startswith("/static/"):
             return None
 

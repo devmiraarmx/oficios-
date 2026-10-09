@@ -25,6 +25,21 @@ def inicio():
     return render_template("public/inicio.html")
 
 
+@bp.route("/cimant")
+def ancla_cimant():
+    """Página ancla de CIMANT: el cliente elige servicio, alcaldía y urgencia,
+    y continúa en WhatsApp; el especialista se asigna manualmente desde ahí.
+    """
+    digitos = "".join(c for c in current_app.config.get("WHATSAPP_NEGOCIO", "") if c.isdigit())
+    if len(digitos) == 10:  # número nacional MX sin lada de país
+        digitos = "52" + digitos
+    return render_template(
+        "public/ancla_cimant.html",
+        whatsapp=digitos,
+        borrador=current_app.config.get("ANCLA_BORRADOR", True),
+    )
+
+
 @bp.route("/oficio/<oficio_slug>/<zona_slug>")
 def landing_oficio_zona(oficio_slug, zona_slug):
     """Landing SEO renderizada en servidor: 'plomero en Coyoacán'.
