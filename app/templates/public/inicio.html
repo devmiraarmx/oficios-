@@ -25,23 +25,26 @@
   </p>
 </section>
 
-{% if oficios %}
-<section>
-  <h2 style="margin-top:40px">Oficios</h2>
-  <div class="opciones">
-    {% for oficio in oficios %}
-      <a class="boton boton--fantasma" href="{{ url_for('public.directorio', oficio=oficio.slug) }}">{{ oficio.nombre }}</a>
-    {% endfor %}
-  </div>
-</section>
-{% endif %}
-
-{% if especialistas %}
-<section>
-  <h2 style="margin-top:40px">Especialistas</h2>
-  <div class="opciones">
-    {% for esp in especialistas %}
-      <a class="boton boton--fantasma" href="{{ url_for('public.directorio', oficio=esp.slug) }}">{{ esp.nombre }}</a>
+{% set secciones = catalogo_por_seccion() %}
+{% if secciones %}
+<section class="catalogo">
+  <h2 style="margin-top:40px">¿Qué trabajo necesitas?</h2>
+  <div class="catalogo__rejilla">
+    {% for grupo in secciones %}
+    <article class="catalogo__seccion{% if grupo.clave == 'especialistas' %} catalogo__seccion--especialistas{% endif %}">
+      <header class="catalogo__encabezado">
+        <span class="catalogo__num">{{ '%02d' % loop.index }}</span>
+        <div>
+          <h3>{{ grupo.titulo }}</h3>
+          {% if grupo.descripcion %}<p class="catalogo__desc">{{ grupo.descripcion }}</p>{% endif %}
+        </div>
+      </header>
+      <div class="opciones">
+        {% for o in grupo.oficios %}
+          <a class="boton boton--fantasma boton--chico" href="{{ url_for('public.directorio', oficio=o.slug) }}">{{ o.nombre }}</a>
+        {% endfor %}
+      </div>
+    </article>
     {% endfor %}
   </div>
 </section>

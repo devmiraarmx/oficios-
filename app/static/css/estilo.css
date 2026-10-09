@@ -127,6 +127,44 @@ main.contenedor { padding: 32px 0 64px; }
 .boton:hover { background: var(--acento-h); color: var(--papel); }
 .boton--fantasma { background: transparent; color: var(--tinta); border: 1px solid var(--tinta); }
 .boton--peligro { background: transparent; color: var(--acento-h); border: 1px solid var(--acento-h); }
+.boton--chico { padding: 7px 12px; font-size: 0.9rem; font-weight: 500; }
+.boton--fantasma:hover { background: var(--tinta); color: var(--papel); }
+
+/* --------------------------------------------------------------------------
+   Catálogo de oficios agrupado por sección (inicio)
+   Cada sección es una "ficha técnica" numerada como lámina de plano.
+   -------------------------------------------------------------------------- */
+.catalogo__rejilla {
+  display: grid; gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+}
+.catalogo__seccion {
+  background: #fff; border: 1px solid var(--borde); border-radius: var(--radio);
+  padding: 18px; border-top: 3px solid var(--acento);
+}
+.catalogo__seccion--especialistas { border-top-color: var(--acero); }
+.catalogo__encabezado {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding-bottom: 12px; margin-bottom: 14px;
+  border-bottom: 1px dotted var(--borde);   /* línea de cotas punteada */
+}
+.catalogo__encabezado h3 { margin: 0; font-size: 1.1rem; }
+.catalogo__num {
+  font-family: var(--fuente-mono); font-size: 0.8rem; color: var(--acero);
+  border: 1px solid var(--borde); border-radius: var(--radio); padding: 2px 6px;
+}
+.catalogo__desc { margin: 4px 0 0; font-size: 0.88rem; color: var(--acero); }
+
+/* Casillas de oficios agrupadas (registro de profesional y alta directa) */
+.casillas-seccion { display: grid; gap: 12px; }
+.casillas-seccion__grupo {
+  border: 1px solid var(--borde); border-radius: var(--radio);
+  padding: 10px 12px 12px; margin: 0; background: #fff;
+}
+.casillas-seccion__grupo legend {
+  font-family: var(--fuente-mono); font-size: 0.75rem; color: var(--acero);
+  text-transform: uppercase; letter-spacing: 0.06em; padding: 0 6px;
+}
 
 /* --------------------------------------------------------------------------
    Ficha técnica (tarjeta de profesional)

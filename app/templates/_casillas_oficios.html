@@ -1,0 +1,14 @@
+{# Casillas de oficios agrupadas por sección. Uso:
+   {% include "_casillas_oficios.html" %}  (envía name="oficios" con los ids) #}
+<div class="casillas-seccion">
+  {% for grupo in catalogo_por_seccion() %}
+  <fieldset class="casillas-seccion__grupo">
+    <legend>{{ grupo.titulo }}</legend>
+    <div class="opciones">
+      {% for o in grupo.oficios %}
+        <label><input type="checkbox" name="oficios" value="{{ o.id }}"> {{ o.nombre }}</label>
+      {% endfor %}
+    </div>
+  </fieldset>
+  {% endfor %}
+</div>

@@ -35,6 +35,11 @@ def create_app(config_class: type = Config) -> Flask:
     from app.cli import registrar_comandos
     registrar_comandos(app)
 
+    # Catálogo de oficios agrupado por sección, disponible en todas las
+    # plantillas: {% for grupo in catalogo_por_seccion() %}
+    from app.models import Oficio
+    app.jinja_env.globals["catalogo_por_seccion"] = Oficio.catalogo_por_seccion
+
     # Filtro de plantilla: teléfono -> enlace de WhatsApp (wa.me).
     # El contacto cliente<->profesional ocurre por WhatsApp/llamada, fuera de
     # la app; no hay chat propio.
