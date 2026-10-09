@@ -73,6 +73,14 @@ class Config:
         "Estamos tomando un descanso. Volvemos pronto.",
     )
 
+    # Página ancla CIMANT (/cimant): capta solicitudes por WhatsApp.
+    # WHATSAPP_NEGOCIO: número de WhatsApp Business que recibe las
+    #   solicitudes, a 10 dígitos o con lada 52 (ej. 5512345678).
+    # ANCLA_APROBADA: mientras no esté en "1"/"true", la página se muestra con
+    #   la franja de "borrador" y con noindex para que Google no la indexe.
+    WHATSAPP_NEGOCIO = os.getenv("WHATSAPP_NEGOCIO", "")
+    ANCLA_BORRADOR = not _es_verdadero(os.getenv("ANCLA_APROBADA"))
+
     # Créditos: cuántos se descuentan al desbloquear un lead.
     CREDITOS_POR_LEAD = 1
 
