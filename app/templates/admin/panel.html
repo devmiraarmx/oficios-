@@ -27,7 +27,7 @@
     {% for p in pendientes %}
     <tr id="fila-{{ p.id }}">
       <td>{{ p.nombre }}</td>
-      <td class="dato">{{ p.oficios | map(attribute='nombre') | join(', ') or '—' }}</td>
+      <td class="dato">{{ p.oficios | map(attribute='nombre') | join(', ') or ('' if p.oficio_otro else '—') }}{% if p.oficio_otro %}{{ ' · ' if p.oficios }}<strong>Otro:</strong> {{ p.oficio_otro }}{% endif %}</td>
       <td class="dato">{{ p.telefono }}</td>
       <td class="dato">{{ p.telefono_referencia or '—' }}</td>
       <td class="dato">{{ p.anios_experiencia }}</td>

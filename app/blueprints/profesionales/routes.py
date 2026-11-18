@@ -46,6 +46,7 @@ def alta():
             anios_experiencia=int(request.form.get("anios_experiencia") or 0),
             descripcion=request.form.get("descripcion", "").strip(),
             telefono_referencia=request.form.get("telefono_referencia", "").strip(),
+            oficio_otro=request.form.get("oficio_otro", "").strip()[:120] or None,
             estado=EstadoProfesional.PENDIENTE,
             saldo_creditos=0,
         )

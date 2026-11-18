@@ -34,6 +34,7 @@ OFICIOS = [
     ("Tablaroquero", "tablaroquero", "acabados"),
     ("Colocador de Pisos y Azulejos", "colocador-pisos-azulejos", "acabados"),
     ("Pintor", "pintor", "acabados"),
+    ("Aluminero", "aluminero", "acabados"),
     # Instalaciones
     ("Plomero", "plomero", "instalaciones"),
     ("Electricista", "electricista", "instalaciones"),
