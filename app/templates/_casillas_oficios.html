@@ -1,5 +1,6 @@
 {# Casillas de oficios agrupadas por sección. Uso:
-   {% include "_casillas_oficios.html" %}  (envía name="oficios" con los ids) #}
+   {% include "_casillas_oficios.html" %}  (envía name="oficios" con los ids
+   y, si marcan "Otro", name="oficio_otro" con el oficio escrito a mano) #}
 <div class="casillas-seccion">
   {% for grupo in catalogo_por_seccion() %}
   <fieldset class="casillas-seccion__grupo">
@@ -11,4 +12,29 @@
     </div>
   </fieldset>
   {% endfor %}
+  <fieldset class="casillas-seccion__grupo">
+    <legend>¿No encuentras tu oficio?</legend>
+    <div class="opciones">
+      <label><input type="checkbox" id="oficio-otro-check"
+                    {{ 'checked' if request.form.get('oficio_otro') }}> Otro</label>
+    </div>
+    <div class="campo oficio-otro" id="oficio-otro-campo"
+         {{ '' if request.form.get('oficio_otro') else 'hidden' }}>
+      <label for="oficio_otro">Escribe tu oficio</label>
+      <input type="text" name="oficio_otro" id="oficio_otro" maxlength="120"
+             value="{{ request.form.get('oficio_otro', '') }}"
+             placeholder="Ej. Especialista en hidroneumáticos">
+    </div>
+  </fieldset>
 </div>
+<script>
+  (function () {
+    var check = document.getElementById('oficio-otro-check');
+    var campo = document.getElementById('oficio-otro-campo');
+    var input = document.getElementById('oficio_otro');
+    check.addEventListener('change', function () {
+      campo.hidden = !check.checked;
+      if (check.checked) { input.focus(); } else { input.value = ''; }
+    });
+  })();
+</script>

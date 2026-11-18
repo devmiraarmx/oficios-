@@ -10,6 +10,7 @@
     <label for="oficio">¿Qué oficio necesitas?</label>
     <input list="lista-oficios" name="oficio" id="oficio" required
            placeholder="Ej. plomero, electricista…">
+    <small>Elige uno de la lista o, si no está, escríbelo tal cual (ej. especialista en hidroneumáticos).</small>
     <datalist id="lista-oficios">
       {% for o in oficios %}<option value="{{ o.nombre }}">{% endfor %}
     </datalist>

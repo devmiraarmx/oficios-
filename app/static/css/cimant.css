@@ -62,7 +62,7 @@ h1, h2, h3 { text-wrap: balance; }
 .pedir .eyebrow { font-size: 12px; letter-spacing: 0.1em; color: var(--gris-4); }
 .campo { display: flex; flex-direction: column; gap: 8px; }
 .campo label, .campo .etiqueta { font-weight: 600; font-size: 15px; }
-.campo select { font: inherit; font-size: 16px; padding: 12px; min-height: 48px; border: 2px solid var(--tinta); background: var(--blanco); color: var(--tinta); border-radius: 0; width: 100%; }
+.campo select, .campo input[type="text"] { font: inherit; font-size: 16px; padding: 12px; min-height: 48px; border: 2px solid var(--tinta); background: var(--blanco); color: var(--tinta); border-radius: 0; width: 100%; }
 .toggle { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .toggle button { font: inherit; font-size: 15px; font-weight: 600; padding: 12px; min-height: 48px; cursor: pointer; border: 2px solid var(--tinta); background: var(--blanco); color: var(--tinta); }
 .toggle button[aria-pressed="true"] { background: var(--tinta); color: var(--blanco); }

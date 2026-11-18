@@ -18,7 +18,7 @@
 
   <div class="ficha__renglon">
     <span class="ficha__etiqueta">Oficio</span>
-    <span class="ficha__valor">{{ profesional.oficios | map(attribute='nombre') | join(', ') or '—' }}</span>
+    <span class="ficha__valor">{{ profesional.oficios_texto or '—' }}</span>
   </div>
   <div class="ficha__renglon">
     <span class="ficha__etiqueta">Experiencia</span>

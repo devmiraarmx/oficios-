@@ -61,7 +61,7 @@ SECCIONES_OFICIO = [
     ("obra_negra", "Obra negra y estructura",
      "Muros, block, cimbra, armado de acero y colados."),
     ("acabados", "Acabados",
-     "Yeso, pasta, estuco, tablaroca, pisos, azulejo y pintura."),
+     "Yeso, pasta, estuco, tablaroca, pisos, azulejo, pintura y cancelería de aluminio."),
     ("instalaciones", "Instalaciones",
      "Agua, drenaje, electricidad y sistemas contra incendios."),
     ("carpinteria_herreria", "Carpintería, herrería y cerrajería",
@@ -189,6 +189,10 @@ class Profesional(db.Model):
     foto_url = db.Column(db.String(300))
     descripcion = db.Column(db.Text)
     telefono_referencia = db.Column(db.String(20))
+    # Oficio escrito a mano cuando no está en el catálogo (opción "Otro").
+    # Ej. "Especialista en hidroneumáticos". No crea un oficio nuevo: el
+    # catálogo sigue curado y los socios deciden si lo agregan.
+    oficio_otro = db.Column(db.String(120))
     # Cómo entró al directorio. Los agregados manualmente por un socio (su red
     # de contactos) entran directo con estado = aprobado, sin llamada.
     origen = db.Column(
@@ -221,6 +225,14 @@ class Profesional(db.Model):
         if not self.resenas:
             return None
         return round(sum(r.calificacion for r in self.resenas) / len(self.resenas), 1)
+
+    @property
+    def oficios_texto(self) -> str:
+        """Oficios del catálogo más el escrito a mano, para mostrar."""
+        nombres = [o.nombre for o in self.oficios]
+        if self.oficio_otro:
+            nombres.append(self.oficio_otro)
+        return ", ".join(nombres)
 
     def __repr__(self) -> str:
         return f"<Profesional {self.id} {self.nombre} ({self.estado.value})>"
